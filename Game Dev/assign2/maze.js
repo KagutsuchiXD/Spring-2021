@@ -7,7 +7,6 @@ let MazeGen = (function(){
     }
 
     // Prim's algorithm
-
     function generateMazeInfo(width, height){
         let mazeInfo = [];
 
@@ -17,29 +16,25 @@ let MazeGen = (function(){
             mazeInfo[x] = []
             for (let y = 0; y < height; y++){
                 // create each cell
-                let cell = {
+                mazeInfo[x][y] = {
                     x: x,
                     y: y,
                     status: "empty",
                     adjacentCells: [],
-                    connectedCells: [],
-                    path: false,
-                    visited: false,
-                    parent: undefined
+                    connectedCells: []
                 };
-                mazeInfo[x][y] = cell;
 
                 if (mazeInfo[x - 1]){
                     if(mazeInfo[x-1][y]){
                         let left = mazeInfo[x-1][y];
-                        cell.adjacentCells.push(left);
-                        left.adjacentCells.push(cell);
+                        mazeInfo[x][y].adjacentCells.push(left);
+                        left.adjacentCells.push(mazeInfo[x][y]);
                     }
                 }
                 if (mazeInfo[x][y - 1]) {
                     let up = mazeInfo[x][y - 1];
-                    cell.adjacentCells.push(up);
-                    up.adjacentCells.push(cell);
+                    mazeInfo[x][y].adjacentCells.push(up);
+                    up.adjacentCells.push(mazeInfo[x][y]);
                 }
             }
         }
@@ -62,7 +57,6 @@ let MazeGen = (function(){
                 }
             }
             addToFrontier(current.adjacentCells);
-
             let randFrontierCell = frontier.splice(Math.floor(Math.random() * frontier.length), 1)[0];
             let possibleConnections = [];
             for (let cc of randFrontierCell.adjacentCells){
@@ -92,24 +86,20 @@ let MazeGen = (function(){
             grid[x] = []
             for (let y = 0; y < mazeWidth; y++){
                 // create each cell
-                let cell = {
+                grid[x][y] = {
                     x: x,
                     y: y,
                     status: "wall",
-                    adjacentCells: [],
                     connectedCells: [],
-                    path: false,
-                    visited: false,
-                    parent: undefined
+                    path: false
                 };
-                grid[x][y] = cell;
             }
         }
 
         for (let i = 0; i < width; i++){
             for (let j = 0; j < height; j++){
-                grid[i*2 + 1][j*2 + 1] = mazeInfo[i][j];
-
+                grid[i*2 + 1][j*2 + 1].status = mazeInfo[i][j].status;
+                grid[i*2 + 1][j*2 + 1].connectedCells = mazeInfo[i][j].connectedCells;
                 for (let cc of mazeInfo[i][j].connectedCells){
                     if (cc.x === mazeInfo[i][j].x){
                         if (cc.y > mazeInfo[i][j].y){
@@ -143,22 +133,67 @@ let MazeGen = (function(){
                             mazeInfo[i][j].connectedCells.push(grid[i*2][j*2 + 1]);
                         }
                     }
-
                 }
             }
         }
 
-        let maze = {
+        return {
             grid: grid,
-            start: [1, 1],
-            current: [1, 1],
-            end: [mazeWidth-2, mazeHeight-2]
+            start: [1,1],
+            current: [1,1],
+            end: [mazeWidth-2,mazeHeight-2]
         };
-
-        return maze;
     }
 
+
     function solveMaze(maze){
+        let visited = [];
+        for (let x = 0; x < maze.grid.length; x++){
+            visited[x] = [];
+            for (let y = 0; y < maze.grid[0].length; y++){
+                visited[x][y] = false;
+            }
+        }
+        let startX = maze.current[0];
+        let startY = maze.current[1];
+        let endX = maze.end[0];
+        let endY = maze.end[1];
+        function recursiveSolve(x, y){
+            if (x === endX && y === endY){
+                return true;
+            }
+            if (maze.grid[x][y].status === "wall" || visited[x][y]){
+                return false;
+            }
+            visited[x][y] = true;
+            if (x !== 0){
+                if (recursiveSolve(x-1, y)){
+                    maze.grid[x][y].path = true; // Sets that path value to true;
+                    return true;
+                }
+            }
+            if (x !== maze.grid.length - 1) // Checks if not on right edge
+                if (recursiveSolve(x+1, y)) { // Recalls method one to the right
+                    maze.grid[x][y].path = true;
+                    return true;
+                }
+            if (y !== 0)  // Checks if not on top edge
+                if (recursiveSolve(x, y-1)) { // Recalls method one up
+                    maze.grid[x][y].path = true;
+                    return true;
+                }
+            if (y !== maze.grid[0].length - 1) // Checks if not on bottom edge
+                if (recursiveSolve(x, y+1)) { // Recalls method one down
+                    maze.grid[x][y].path = true;
+                    return true;
+                }
+            return false;
+        }
+        recursiveSolve(startX, startY);
+    }
+
+
+    function solveMaze2(maze){
         for (let x = 0; x < maze.grid.length; x++){
             for (let y = 0; y < maze.grid[0].length; y++){
                 maze.grid[x][y].path = false;
@@ -170,15 +205,16 @@ let MazeGen = (function(){
             let queue = [];
             queue.push(location);
             while(queue.length > 0){
-                let current = queue.shift();
+                let current = queue.splice(0,1)[0];
+                location = current;
                 if (current.x === maze.end[0] && current.y === maze.end[1]){
                     return current;
                 }
-                maze.grid[current.x][current.y].visited = true;
-                for (let neighbor of maze.grid[current.x][current.y].connectedCells){
+                current.visited = true;
+                for (let neighbor of current.connectedCells){
                     if(neighbor.visited === false){
                         queue.push(neighbor);
-                        maze.grid[current.x][current.y].parent = current;
+                        current.parent = current;
                     }
                 }
             }
@@ -203,7 +239,7 @@ let MazeGen = (function(){
             for (let y = 0; y < maze.grid[0].length; y++){
                 if (maze.grid[x][y].status === "maze"){
                     if (maze.grid[x][y].path === true){
-                        console.log("maze found at: " + x + "," + y);
+                        console.log("Path found at: " + x + "," + y);
                         context.fillStyle = 'rgba(0, 0, 0, .75)';
                         context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
                     }
