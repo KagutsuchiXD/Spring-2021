@@ -1,0 +1,4 @@
+include ':CounterAPI'
+include ':phonecounter'
+include ':app'
+rootProject.name = "FireBaseDemo"

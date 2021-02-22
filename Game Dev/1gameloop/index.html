@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <title>Game Loop</title>
+</head>
+<body>
+<table style="width:100%">
+    <tr>
+        <th colspan="2">
+            <h1 id="header">Browser GameLoop</h1>
+        </th>
+    </tr>
+    <tr>
+        <td>
+            <h3>Event Output</h3>
+        </td>
+        <td>
+            <h3>Event Intput</h3>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div id="output" class="scrollable">
+
+            </div>
+        </td>
+        <td>
+            <div id="input">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name"><br><br>
+                <label for="interval">Interval:</label>
+                <input type="text" id="interval" name="interval"><br><br>
+                <label for="times"># of Times:</label>
+                <input type="text" id="times" name="times"><br><br>
+                <button onclick="addNewEventElement()">Add New Event</button>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <th colspan="2">
+            <h2 id="footer">
+                Created for CS 5410 Project 1
+            </h2>
+        </th>
+    </tr>
+</table>
+<script src="gameloop.js"></script>
+</body>
+</html>

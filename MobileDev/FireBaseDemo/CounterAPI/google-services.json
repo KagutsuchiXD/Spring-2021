@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1080512804217",
+    "project_id": "usu-counter-3b9a9",
+    "storage_bucket": "usu-counter-3b9a9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1080512804217:android:ea11fc45bbf82da0772ba8",
+        "android_client_info": {
+          "package_name": "com.usu.afro.firebasedemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1080512804217-tu7f7ir1t3o6jrga3qe58q2t7f6fdi0r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuNq1eXEevLq5zbZW2P2nvEJa9PiK3V7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1080512804217-tu7f7ir1t3o6jrga3qe58q2t7f6fdi0r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
