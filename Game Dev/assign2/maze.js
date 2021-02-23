@@ -81,6 +81,7 @@ let MazeGen = (function(){
 
         let mazeWidth = width * 2 + 1;
         let mazeHeight = height * 2 + 1;
+
         for (let x = 0; x < mazeHeight; x++){
             //initialize columns
             grid[x] = []
@@ -100,6 +101,7 @@ let MazeGen = (function(){
             for (let j = 0; j < height; j++){
                 grid[i*2 + 1][j*2 + 1].status = mazeInfo[i][j].status;
                 grid[i*2 + 1][j*2 + 1].connectedCells = mazeInfo[i][j].connectedCells;
+
                 for (let cc of mazeInfo[i][j].connectedCells){
                     if (cc.x === mazeInfo[i][j].x){
                         if (cc.y > mazeInfo[i][j].y){
@@ -141,7 +143,10 @@ let MazeGen = (function(){
             grid: grid,
             start: [1,1],
             current: [1,1],
-            end: [mazeWidth-2,mazeHeight-2]
+            end: [mazeWidth-2,mazeHeight-2],
+            hint: false,
+            breadCrumbs: false,
+            pathToFinish: false
         };
     }
 
@@ -152,6 +157,7 @@ let MazeGen = (function(){
             visited[x] = [];
             for (let y = 0; y < maze.grid[0].length; y++){
                 visited[x][y] = false;
+                maze.grid[x][y].path = false;
             }
         }
         let startX = maze.current[0];
@@ -160,6 +166,7 @@ let MazeGen = (function(){
         let endY = maze.end[1];
         function recursiveSolve(x, y){
             if (x === endX && y === endY){
+                maze.grid[x][y].path = true;
                 return true;
             }
             if (maze.grid[x][y].status === "wall" || visited[x][y]){
@@ -190,47 +197,6 @@ let MazeGen = (function(){
             return false;
         }
         recursiveSolve(startX, startY);
-    }
-
-
-    function solveMaze2(maze){
-        for (let x = 0; x < maze.grid.length; x++){
-            for (let y = 0; y < maze.grid[0].length; y++){
-                maze.grid[x][y].path = false;
-            }
-        }
-        function findPath(){
-            let location = maze.grid[maze.current[0]][maze.current[1]];
-
-            let queue = [];
-            queue.push(location);
-            while(queue.length > 0){
-                let current = queue.splice(0,1)[0];
-                location = current;
-                if (current.x === maze.end[0] && current.y === maze.end[1]){
-                    return current;
-                }
-                current.visited = true;
-                for (let neighbor of current.connectedCells){
-                    if(neighbor.visited === false){
-                        queue.push(neighbor);
-                        current.parent = current;
-                    }
-                }
-            }
-            return false;
-        }
-        let trailHead = findPath();
-        while(true){
-            trailHead.path = true;
-            if(maze.grid[trailHead.x][trailHead.y].parent){
-                trailHead = maze.grid[trailHead.x][trailHead.y].parent;
-            }
-            else{
-                break;
-            }
-
-        }
     }
 
     function drawMaze(maze){

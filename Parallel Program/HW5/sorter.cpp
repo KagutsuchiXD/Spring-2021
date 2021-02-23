@@ -52,7 +52,6 @@ int main(int argc, char **argv){
             MPI_Barrier(MCW);
             unsigned int map = 1;
             int dest = rank^(map<<j);
-
             MPI_Send(&currentData,1,MPI_INT,dest,0,MCW);
             MPI_Recv(&data,1,MPI_INT,MPI_ANY_SOURCE,0,MCW,&mystatus);
             if(!ithbit(rank,i+1)){
