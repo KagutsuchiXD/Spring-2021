@@ -1,6 +1,24 @@
 let MazeGen = (function(){
     let canvas = document.getElementById('mazeCanvas');
     let context = canvas.getContext('2d');
+    let web = function(imageSource) {
+        let image = new Image();
+        image.isReady = false;
+        image.onload = function() {
+            this.isReady = true;
+        };
+        image.src = imageSource;
+        return image;
+    }('web.jpg');
+    let sense = function(imageSource) {
+        let image = new Image();
+        image.isReady = false;
+        image.onload = function() {
+            this.isReady = true;
+        };
+        image.src = imageSource;
+        return image;
+    }('spideysense.png');
 
     function clear() {
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -107,32 +125,32 @@ let MazeGen = (function(){
                         if (cc.y > mazeInfo[i][j].y){
                             grid[i*2 + 1][j*2 + 2].status = "maze";
                             grid[i*2 + 1][j*2 + 2].connectedCells.push(cc);
-                            grid[i*2 + 1][j*2 + 2].connectedCells.push(mazeInfo[i][j]);
+                            grid[i*2 + 1][j*2 + 2].connectedCells.push(grid[i*2 + 1][j*2 + 1]);
                             cc.connectedCells.push(grid[i*2 + 1][j*2 + 2]);
-                            mazeInfo[i][j].connectedCells.push(grid[i*2 + 1][j*2 + 2]);
+                            grid[i*2 + 1][j*2 + 1].connectedCells.push(grid[i*2 + 1][j*2 + 2]);
                         }
                         else if (cc.y < mazeInfo[i][j].y){
                             grid[i*2 + 1][j*2].status = "maze";
                             grid[i*2 + 1][j*2].connectedCells.push(cc);
-                            grid[i*2 + 1][j*2].connectedCells.push(mazeInfo[i][j]);
+                            grid[i*2 + 1][j*2].connectedCells.push(grid[i*2 + 1][j*2 + 1]);
                             cc.connectedCells.push(grid[i*2 + 1][j*2]);
-                            mazeInfo[i][j].connectedCells.push(grid[i*2 + 1][j*2]);
+                            grid[i*2 + 1][j*2 + 1].connectedCells.push(grid[i*2 + 1][j*2]);
                         }
                     }
                     else if (cc.y === mazeInfo[i][j].y){
                         if (cc.x > mazeInfo[i][j].x){
                             grid[i*2 + 2][j*2 + 1].status = "maze";
                             grid[i*2 + 2][j*2 + 1].connectedCells.push(cc);
-                            grid[i*2 + 2][j*2 + 1].connectedCells.push(mazeInfo[i][j]);
+                            grid[i*2 + 2][j*2 + 1].connectedCells.push(grid[i*2 + 1][j*2 + 1]);
                             cc.connectedCells.push(grid[i*2 + 2][j*2 + 1]);
-                            mazeInfo[i][j].connectedCells.push(grid[i*2 + 2][j*2 + 1]);
+                            grid[i*2 + 1][j*2 + 1].connectedCells.push(grid[i*2 + 2][j*2 + 1]);
                         }
                         else if (cc.y < mazeInfo[i][j].y){
                             grid[i*2][j*2 + 1].status = "maze";
                             grid[i*2][j*2 + 1].connectedCells.push(cc);
-                            grid[i*2][j*2 + 1].connectedCells.push(mazeInfo[i][j]);
+                            grid[i*2][j*2 + 1].connectedCells.push(grid[i*2 + 1][j*2 + 1]);
                             cc.connectedCells.push(grid[i*2][j*2 + 1]);
-                            mazeInfo[i][j].connectedCells.push(grid[i*2][j*2 + 1]);
+                            grid[i*2 + 1][j*2 + 1].connectedCells.push(grid[i*2][j*2 + 1]);
                         }
                     }
                 }
@@ -200,22 +218,56 @@ let MazeGen = (function(){
     }
 
     function renderMaze(maze){
-        if(maze.pathToFinish === true){
+        if(maze.pathToFinish === true || maze.showHint === true){
             solveMaze(maze);
         }
         let cellSize = canvas.width / maze.grid.length;
+        let hintFound = false;
+        let hintLocation = null;
         for (let x = 0; x < maze.grid.length; x++){
             for (let y = 0; y < maze.grid[0].length; y++){
                 if (maze.grid[x][y].status === "maze"){
                     if (maze.grid[x][y].path === true && maze.pathToFinish === true){
-                        console.log("Path found at: " + x + "," + y);
-                        context.fillStyle = 'rgba(0, 0, 0, .75)';
-                        context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
+                        if(maze.showHint === true){
+                            if (maze.grid[x][y].connectedCells.includes(maze.grid[maze.current[0]][maze.current[1]])){
+                                context.drawImage(sense, x*cellSize, y*cellSize,cellSize,cellSize);
+                            }
+                            else{
+                                console.log("Path found at: " + x + "," + y);
+                                context.fillStyle = 'rgba(0, 0, 0, .75)';
+                                context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
+                            }
+                        }
+                        else{
+                            console.log("Path found at: " + x + "," + y);
+                            context.fillStyle = 'rgba(0, 0, 0, .75)';
+                            context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
+                        }
                     }
                     else{
-                        console.log("maze found at: " + x + "," + y);
-                        context.fillStyle = 'rgba(255, 0, 0, .75)';
-                        context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
+                        if(maze.showHint === true){
+                            if (maze.grid[x][y].path === true && maze.grid[x][y].connectedCells.includes(maze.grid[maze.current[0]][maze.current[1]])){
+                                context.drawImage(sense, x*cellSize, y*cellSize,cellSize,cellSize);
+                            }
+                            else if(maze.breadCrumbs === true && web.isReady && maze.grid[x][y].visited === true){
+                                context.drawImage(web, x*cellSize, y*cellSize,cellSize,cellSize);
+                            }
+                            else{
+                                console.log("maze found at: " + x + "," + y);
+                                context.fillStyle = 'rgba(255, 0, 0, .75)';
+                                context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
+                            }
+                        }
+                        else{
+                            if(maze.breadCrumbs === true && web.isReady && maze.grid[x][y].visited === true){
+                                context.drawImage(web, x*cellSize, y*cellSize,cellSize,cellSize);
+                            }
+                            else{
+                                console.log("maze found at: " + x + "," + y);
+                                context.fillStyle = 'rgba(255, 0, 0, .75)';
+                                context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
+                            }
+                        }
                     }
                 }
                 else if(maze.grid[x][y].status === "wall"){

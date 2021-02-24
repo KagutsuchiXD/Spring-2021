@@ -10,7 +10,7 @@ let myCharacter = function(imageSource) {
     };
     image.src = imageSource;
     return image;
-}('spidey3.png');
+}('spidey.png');
 
 function moveCharacter(key) {
     maze.grid[maze.current[0]][maze.current[1]].visited = true;
