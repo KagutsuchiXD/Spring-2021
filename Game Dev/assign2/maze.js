@@ -9,7 +9,6 @@ let MazeGen = (function(){
     // Prim's algorithm
     function generateMazeInfo(width, height){
         let mazeInfo = [];
-
         // generate grid of cells... I know the setup is wonky but maze[x][y] is easier to understand.
         for (let x = 0; x < width; x++){
             //initialize columns
@@ -92,7 +91,8 @@ let MazeGen = (function(){
                     y: y,
                     status: "wall",
                     connectedCells: [],
-                    path: false
+                    path: false,
+                    visited: false
                 };
             }
         }
@@ -144,7 +144,7 @@ let MazeGen = (function(){
             start: [1,1],
             current: [1,1],
             end: [mazeWidth-2,mazeHeight-2],
-            hint: false,
+            showHint: false,
             breadCrumbs: false,
             pathToFinish: false
         };
@@ -199,12 +199,15 @@ let MazeGen = (function(){
         recursiveSolve(startX, startY);
     }
 
-    function drawMaze(maze){
+    function renderMaze(maze){
+        if(maze.pathToFinish === true){
+            solveMaze(maze);
+        }
         let cellSize = canvas.width / maze.grid.length;
         for (let x = 0; x < maze.grid.length; x++){
             for (let y = 0; y < maze.grid[0].length; y++){
                 if (maze.grid[x][y].status === "maze"){
-                    if (maze.grid[x][y].path === true){
+                    if (maze.grid[x][y].path === true && maze.pathToFinish === true){
                         console.log("Path found at: " + x + "," + y);
                         context.fillStyle = 'rgba(0, 0, 0, .75)';
                         context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
@@ -227,10 +230,18 @@ let MazeGen = (function(){
         }
     }
 
+    function renderCharacter(character, location){
+        let cellSize = canvas.width / maze.grid.length;
+        if(character.isReady){
+            context.drawImage(character, location[0] * cellSize, location[1] * cellSize, cellSize, cellSize);
+        }
+    }
+
     return{
         generateMaze: generateMaze,
         solveMaze: solveMaze,
-        drawMaze: drawMaze,
+        renderMaze: renderMaze,
+        renderCharacter: renderCharacter,
         clear: clear
     }
 })();
