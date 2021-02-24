@@ -1,0 +1,23 @@
+h1{
+    text-align: center;
+    color: #979191;
+    font-size: 100px;
+}
+h3{
+    color: #979191;
+}
+p{
+    color: #979191;
+}
+#menuHolder{
+    float: left;
+    padding: 20px;
+}
+#mazeHolder{
+}
+body{
+    background-image: url("background.jpg");
+    background-position: center;
+    background-attachment: fixed;
+    background-size: auto;
+}

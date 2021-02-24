@@ -1,6 +1,7 @@
 let MazeGen = (function(){
     let canvas = document.getElementById('mazeCanvas');
     let context = canvas.getContext('2d');
+    context.globalAlpha = 0.9;
     let web = function(imageSource) {
         let image = new Image();
         image.isReady = false;
@@ -19,6 +20,15 @@ let MazeGen = (function(){
         image.src = imageSource;
         return image;
     }('spideysense.png');
+    let mj = function(imageSource) {
+        let image = new Image();
+        image.isReady = false;
+        image.onload = function() {
+            this.isReady = true;
+        };
+        image.src = imageSource;
+        return image;
+    }('mj.png');
 
     function clear() {
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -222,8 +232,6 @@ let MazeGen = (function(){
             solveMaze(maze);
         }
         let cellSize = canvas.width / maze.grid.length;
-        let hintFound = false;
-        let hintLocation = null;
         for (let x = 0; x < maze.grid.length; x++){
             for (let y = 0; y < maze.grid[0].length; y++){
                 if (maze.grid[x][y].status === "maze"){
@@ -234,13 +242,13 @@ let MazeGen = (function(){
                             }
                             else{
                                 console.log("Path found at: " + x + "," + y);
-                                context.fillStyle = 'rgba(0, 0, 0, .75)';
+                                context.fillStyle = 'rgba(0, 0, 0, 1)';
                                 context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
                             }
                         }
                         else{
                             console.log("Path found at: " + x + "," + y);
-                            context.fillStyle = 'rgba(0, 0, 0, .75)';
+                            context.fillStyle = 'rgba(0, 0, 0, 1)';
                             context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
                         }
                     }
@@ -254,7 +262,7 @@ let MazeGen = (function(){
                             }
                             else{
                                 console.log("maze found at: " + x + "," + y);
-                                context.fillStyle = 'rgba(255, 0, 0, .75)';
+                                context.fillStyle = 'rgba(255, 0, 0, 1)';
                                 context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
                             }
                         }
@@ -264,7 +272,7 @@ let MazeGen = (function(){
                             }
                             else{
                                 console.log("maze found at: " + x + "," + y);
-                                context.fillStyle = 'rgba(255, 0, 0, .75)';
+                                context.fillStyle = 'rgba(255, 0, 0, 1)';
                                 context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
                             }
                         }
@@ -272,14 +280,13 @@ let MazeGen = (function(){
                 }
                 else if(maze.grid[x][y].status === "wall"){
                     console.log("wall found at: " + x + "," + y);
-                    context.fillStyle = 'rgba(0, 0, 255, .75)';
+                    context.fillStyle = 'rgba(0, 0, 255, 1)';
                     context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
-                }
-                else{
-                    console.log("error found at: " + x + "," + y);
                 }
             }
         }
+
+        context.drawImage(mj, maze.end[0]*cellSize, maze.end[0]*cellSize,cellSize,cellSize);
     }
 
     function renderCharacter(character, location){
@@ -291,7 +298,6 @@ let MazeGen = (function(){
 
     return{
         generateMaze: generateMaze,
-        solveMaze: solveMaze,
         renderMaze: renderMaze,
         renderCharacter: renderCharacter,
         clear: clear

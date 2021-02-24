@@ -74,8 +74,12 @@ function processInput() {
     inputBuffer = {};
 }
 
-function gameLoop() {
+function update(){
     processInput();
+}
+
+function gameLoop() {
+    update();
     render();
 
     requestAnimationFrame(gameLoop);

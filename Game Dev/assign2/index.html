@@ -2,13 +2,36 @@
 <html lang = "en-US">
 <head>
     <meta charset = "UTF-8">
+    <link rel="stylesheet" type="text/css" href="style.css"/>
     <title>Maze Game</title>
 </head>
 <body onload="initialize()">
-<canvas id = "mazeCanvas"
-        width = "1000" height = "1000"
-        style = "width: 60%; height: 60%; border-style: solid; border-width: 3px">
-</canvas>
+<h1 id="title">
+Spidey's Maze
+</h1>
+<div id="menuHolder">
+    <h3>
+        Controls:
+    </h3>
+    <p>
+        wasd, ijkl or &uarr;   &larr;&darr;&rarr; : Movement
+    </p>
+    <p>
+        h : Toggle Hint
+    </p>
+    <p>
+        b : Toggle Breadcrumb Trail
+    </p>
+    <p>
+        p : Toggle Path to Finish
+    </p>
+</div>
+<div id="mazeHolder">
+    <canvas id = "mazeCanvas"
+            width = "1000" height = "1000"
+            style = "width: 50%; height: 50%; border-style: solid; border-width: 3px">
+    </canvas>
+</div>
 
 <script src = "maze.js"></script>
 <script src = "gameDriver.js"></script>
