@@ -10,6 +10,11 @@
 Spidey's Maze
 </h1>
 <div id="menuHolder">
+    <p>
+        Start new game using current settings
+    </p>
+    <button id="new-game">New Game</button>
+    <br>
     <h3>
         Controls:
     </h3>
@@ -25,11 +30,28 @@ Spidey's Maze
     <p>
         p : Toggle Path to Finish
     </p>
+    <br>
+    <div id = "radio-ctn">
+        <p>
+            Start new game of chosen size
+        </p>
+
+        <input type="radio" id="five" name = "maze-size" value="5">
+        <label >5x5</label><br>
+        <input type="radio" id="ten" name = "maze-size" value="10" checked>
+        <label >10x10</label><br>
+        <input type="radio" id="fifteen" name = "maze-size" value="15">
+        <label >15x15</label><br>
+        <input type="radio" id="twenty" name = "maze-size" value="20">
+        <label >20x20</label>
+    </div>
+    <button id="change-size" onclick="changeSize()">Change Size</button>
 </div>
 <div id="mazeHolder">
+    <h2 id="progress"></h2>
     <canvas id = "mazeCanvas"
             width = "1000" height = "1000"
-            style = "width: 50%; height: 50%; border-style: solid; border-width: 3px">
+            style = "width: 55%; height: 55%; border-style: solid; border-width: 3px">
     </canvas>
 </div>
 

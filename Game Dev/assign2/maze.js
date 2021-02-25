@@ -1,7 +1,7 @@
 let MazeGen = (function(){
     let canvas = document.getElementById('mazeCanvas');
     let context = canvas.getContext('2d');
-    context.globalAlpha = 0.9;
+    context.globalAlpha = 0.97;
     let web = function(imageSource) {
         let image = new Image();
         image.isReady = false;
@@ -228,9 +228,8 @@ let MazeGen = (function(){
     }
 
     function renderMaze(maze){
-        if(maze.pathToFinish === true || maze.showHint === true){
-            solveMaze(maze);
-        }
+        solveMaze(maze);
+
         let cellSize = canvas.width / maze.grid.length;
         for (let x = 0; x < maze.grid.length; x++){
             for (let y = 0; y < maze.grid[0].length; y++){
@@ -241,13 +240,11 @@ let MazeGen = (function(){
                                 context.drawImage(sense, x*cellSize, y*cellSize,cellSize,cellSize);
                             }
                             else{
-                                console.log("Path found at: " + x + "," + y);
                                 context.fillStyle = 'rgba(0, 0, 0, 1)';
                                 context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
                             }
                         }
                         else{
-                            console.log("Path found at: " + x + "," + y);
                             context.fillStyle = 'rgba(0, 0, 0, 1)';
                             context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
                         }
@@ -261,7 +258,6 @@ let MazeGen = (function(){
                                 context.drawImage(web, x*cellSize, y*cellSize,cellSize,cellSize);
                             }
                             else{
-                                console.log("maze found at: " + x + "," + y);
                                 context.fillStyle = 'rgba(255, 0, 0, 1)';
                                 context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
                             }
@@ -271,7 +267,6 @@ let MazeGen = (function(){
                                 context.drawImage(web, x*cellSize, y*cellSize,cellSize,cellSize);
                             }
                             else{
-                                console.log("maze found at: " + x + "," + y);
                                 context.fillStyle = 'rgba(255, 0, 0, 1)';
                                 context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
                             }
@@ -279,7 +274,6 @@ let MazeGen = (function(){
                     }
                 }
                 else if(maze.grid[x][y].status === "wall"){
-                    console.log("wall found at: " + x + "," + y);
                     context.fillStyle = 'rgba(0, 0, 255, 1)';
                     context.fillRect(x*cellSize, y*cellSize,cellSize,cellSize);
                 }

@@ -2,12 +2,20 @@ h1{
     text-align: center;
     color: #979191;
     font-size: 100px;
+    font-weight: bold;
+}
+h2{
+    text-align: center;
+    color: #979191;
+    font-weight: bold;
 }
 h3{
     color: #979191;
+    font-weight: bold;
 }
-p{
+p, label{
     color: #979191;
+    font-weight: bold;
 }
 #menuHolder{
     float: left;
