@@ -13,7 +13,7 @@ Spidey's Maze
     <p>
         Start new game using current settings
     </p>
-    <button id="new-game">New Game</button>
+    <button id="new-game" onclick="newGame()">New Game</button>
     <br>
     <h3>
         Controls:
@@ -36,16 +36,17 @@ Spidey's Maze
             Start new game of chosen size
         </p>
 
-        <input type="radio" id="five" name = "maze-size" value="5">
+        <input type="radio" id="five" name = "maze-size" value="5" checked>
         <label >5x5</label><br>
-        <input type="radio" id="ten" name = "maze-size" value="10" checked>
+        <input type="radio" id="ten" name = "maze-size" value="10">
         <label >10x10</label><br>
         <input type="radio" id="fifteen" name = "maze-size" value="15">
         <label >15x15</label><br>
         <input type="radio" id="twenty" name = "maze-size" value="20">
         <label >20x20</label>
+        <button id="change-size" onclick="changeSize()">Change Size</button>
     </div>
-    <button id="change-size" onclick="changeSize()">Change Size</button>
+    <div id="score-board"></div>
 </div>
 <div id="mazeHolder">
     <h2 id="progress"></h2>
@@ -55,7 +56,7 @@ Spidey's Maze
     </canvas>
 </div>
 
-<script src = "maze.js"></script>
-<script src = "gameDriver.js"></script>
+<script src = "assign2_scripts/maze.js"></script>
+<script src = "assign2_scripts/gameDriver.js"></script>
 </body>
 </html>

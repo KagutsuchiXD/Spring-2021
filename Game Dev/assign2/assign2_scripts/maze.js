@@ -10,7 +10,7 @@ let MazeGen = (function(){
         };
         image.src = imageSource;
         return image;
-    }('web.jpg');
+    }('images/web.jpg');
     let sense = function(imageSource) {
         let image = new Image();
         image.isReady = false;
@@ -19,7 +19,7 @@ let MazeGen = (function(){
         };
         image.src = imageSource;
         return image;
-    }('spideysense.png');
+    }('images/spideysense.png');
     let mj = function(imageSource) {
         let image = new Image();
         image.isReady = false;
@@ -28,7 +28,7 @@ let MazeGen = (function(){
         };
         image.src = imageSource;
         return image;
-    }('mj.png');
+    }('images/mj.png');
 
     function clear() {
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -290,10 +290,15 @@ let MazeGen = (function(){
         }
     }
 
+    function renderEnd(){
+        context.drawImage(mj, 0, 0,canvas.width, canvas.height);
+    }
+
     return{
         generateMaze: generateMaze,
         renderMaze: renderMaze,
         renderCharacter: renderCharacter,
+        renderEnd: renderEnd,
         clear: clear
     }
 })();

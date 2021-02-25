@@ -1,6 +1,7 @@
 let maze = null;
 let mazeSize = 5;
 let inputBuffer = [];
+let gameOver = false;
 let startTime = performance.now();
 let timer = {
     min: 0,
@@ -8,6 +9,7 @@ let timer = {
 };
 let score = 0;
 let progressBar = document.getElementById("progress");
+let scoreBoard = document.getElementById("score-board");
 
 let highscores = [];
 
@@ -19,17 +21,17 @@ let myCharacter = function(imageSource) {
     };
     image.src = imageSource;
     return image;
-}('spidey.png');
+}('images/spidey.png');
 
 function calculateScore(cell){
     if(cell.visited === false && cell.path === true){
-        score += 10;
+        score += 5;
     }
     else if(cell.visited === false && cell.path === false){
         score -= 3;
     }
     else if(cell.visited === true && cell.path === false){
-        score -= 2;
+        score -= 1;
     }
 }
 
@@ -96,23 +98,64 @@ function calculateElapsedTime(time){
 }
 
 function renderProgressData(){
-    progressBar.innerHTML = "Time: " + timer.min + ":" + timer.sec + "          Score: " + score;
+    progressBar.innerHTML = "Time: " + timer.min + ":" + timer.sec + " ***** " + "Score: " + score;
+}
+
+function showScoreBoard(){
+    let head = document.createElement("h3");
+    let headNode = document.createTextNode("High Scores:")
+    head.appendChild(headNode);
+    scoreBoard.appendChild(head);
+
+    for(let i = 0; i < highscores.length; i++){
+        let score = document.createElement("p");
+        let scoreInfo = document.createTextNode("Score: " + highscores[i].cscore + " Time: " +
+            highscores[i].ctime.min + ":" + highscores[i].ctime.sec + " Size: " + highscores[i].size +
+            "x" + highscores[i].size);
+        score.appendChild(scoreInfo);
+        scoreBoard.appendChild(score);
+    }
+}
+
+function endGame(){
+    if(gameOver === false){
+        let currentScore = {
+            ctime: timer,
+            cscore: score,
+            size: mazeSize
+        }
+        highscores.push(currentScore);
+        highscores.sort((a, b) => (a.cscore < b.cscore) ? 1 : (a.cscore === b.cscore) ?
+            ((a.size < b.size) ? 1 : -1) : -1);
+        showScoreBoard();
+        gameOver = true;
+    }
 }
 
 function update(elapsedTime){
-    calculateElapsedTime(elapsedTime);
-    processInput();
+    if (maze.current[0] === maze.end[0] && maze.current[1] === maze.end[1]){
+        endGame();
+    }
+    else{
+        calculateElapsedTime(elapsedTime);
+        processInput();
+    }
 }
 
 function render() {
-    renderProgressData();
-    MazeGen.clear();
-    MazeGen.renderMaze(maze);
-    MazeGen.renderCharacter(myCharacter, maze.current);
+    if (gameOver){
+        MazeGen.renderEnd();
+    }
+    else{
+        renderProgressData();
+        MazeGen.clear();
+        MazeGen.renderMaze(maze);
+        MazeGen.renderCharacter(myCharacter, maze.current);
+    }
 }
 
 function gameLoop() {
-    elapsedTime = performance.now() - startTime;
+    let elapsedTime = performance.now() - startTime;
     update(elapsedTime);
     render();
 
@@ -126,9 +169,14 @@ function changeSize(){
             mazeSize = radioCtn.children[i].value;
         }
     }
+    newGame();
 }
 
 function newGame(){
+    gameOver = false;
+    scoreBoard.innerHTML = "";
+    startTime = performance.now();
+    score = 0;
     initialize();
 }
 
