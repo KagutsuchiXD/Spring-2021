@@ -10,6 +10,7 @@ let timer = {
 let score = 0;
 let progressBar = document.getElementById("progress");
 let scoreBoard = document.getElementById("score-board");
+let keyReceived = null;
 
 let highscores = [];
 
@@ -37,31 +38,31 @@ function calculateScore(cell){
 
 function moveCharacter(key) {
     maze.grid[maze.current[0]][maze.current[1]].visited = true;
-    if (key === 'ArrowDown' || key === 's' || key === 'k') {
+    if (inputBuffer.includes(key) === false && (key === 'ArrowDown' || key === 's' || key === 'k')) {
         if (maze.grid[maze.current[0]][maze.current[1]+1].status === "maze") {
             calculateScore(maze.grid[maze.current[0]][maze.current[1]+1]);
             maze.current[1] += 1;
         }
     }
-    if (key === 'ArrowUp' || key === 'w' || key === 'i') {
+    if (inputBuffer.includes(key) === false && (key === 'ArrowUp' || key === 'w' || key === 'i')) {
         if (maze.grid[maze.current[0]][maze.current[1]-1].status === "maze") {
             calculateScore(maze.grid[maze.current[0]][maze.current[1]-1]);
             maze.current[1] -= 1;
         }
     }
-    if (key === 'ArrowRight' || key === 'd' || key === 'l') {
+    if (inputBuffer.includes(key) === false && (key === 'ArrowRight' || key === 'd' || key === 'l')) {
         if (maze.grid[maze.current[0]+1][maze.current[1]].status === "maze") {
             calculateScore(maze.grid[maze.current[0]+1][maze.current[1]]);
             maze.current[0] += 1;
         }
     }
-    if (key === 'ArrowLeft' || key === 'a' || key === 'j') {
+    if (inputBuffer.includes(key) === false && (key === 'ArrowLeft' || key === 'a' || key === 'j')) {
         if (maze.grid[maze.current[0]-1][maze.current[1]].status === "maze") {
             calculateScore(maze.grid[maze.current[0]-1][maze.current[1]]);
             maze.current[0] -= 1;
         }
     }
-    if (key === 'h'){
+    if (inputBuffer.includes(key) === false && (key === 'h')){
         if (maze.showHint === false){
             maze.showHint = true;
         }
@@ -69,7 +70,7 @@ function moveCharacter(key) {
             maze.showHint = false;
         }
     }
-    if (key === 'b'){
+    if (inputBuffer.includes(key) === false && (key === 'b')){
         if (maze.breadCrumbs === false){
             maze.breadCrumbs = true;
         }
@@ -77,7 +78,7 @@ function moveCharacter(key) {
             maze.breadCrumbs = false;
         }
     }
-    if (key === 'p'){
+    if (inputBuffer.includes(key) === false && (key === 'p')){
         if (maze.pathToFinish === false){
             maze.pathToFinish = true;
         }
@@ -85,11 +86,20 @@ function moveCharacter(key) {
             maze.pathToFinish = false;
         }
     }
+    if(inputBuffer.indexOf(key) === -1){
+        inputBuffer.push(key);
+    }
 }
 
-function processInput() {
-    moveCharacter(inputBuffer[0])
+function processInput(e) {
+    if(keyReceived !== null){
+        moveCharacter(e)
+    }
+}
+
+function keyUp(){
     inputBuffer = [];
+    keyReceived = null;
 }
 
 function calculateElapsedTime(time){
@@ -138,7 +148,7 @@ function update(elapsedTime){
     }
     else{
         calculateElapsedTime(elapsedTime);
-        processInput();
+        processInput(keyReceived);
     }
 }
 
@@ -183,8 +193,9 @@ function newGame(){
 function initialize() {
     maze = MazeGen.generateMaze(mazeSize,mazeSize);
     window.addEventListener('keydown', function(event) {
-        inputBuffer.push(event.key);
+        keyReceived = event.key;
     });
+    window.addEventListener('keyup', keyUp);
 
     requestAnimationFrame(gameLoop);
 }

@@ -1,4 +1,4 @@
-include ':WatchStarter'
+include ':TodosWatch'
 include ':API'
-include ':PhoneStarter'
-rootProject.name = "TestAndroid"
+include ':TodosPhone'
+rootProject.name = "HW2TodoApp"

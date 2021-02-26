@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "1070494349582",
+    "project_id": "afrotodos-5770f",
+    "storage_bucket": "afrotodos-5770f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070494349582:android:8a4cc0c79c2ced21653f5f",
+        "android_client_info": {
+          "package_name": "com.afrotodos.phoneapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1070494349582-qqsuv7j3phqg1uep03sagbv4kvj3j21f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdb2hDw0WyxJ-fzJ8vnX_3tf0AL-RlwCY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1070494349582-qqsuv7j3phqg1uep03sagbv4kvj3j21f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070494349582:android:6a473b68f8219e26653f5f",
+        "android_client_info": {
+          "package_name": "com.afrotodos.watchapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1070494349582-qqsuv7j3phqg1uep03sagbv4kvj3j21f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdb2hDw0WyxJ-fzJ8vnX_3tf0AL-RlwCY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1070494349582-qqsuv7j3phqg1uep03sagbv4kvj3j21f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

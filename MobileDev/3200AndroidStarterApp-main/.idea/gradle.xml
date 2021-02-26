@@ -13,8 +13,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/API" />
-            <option value="$PROJECT_DIR$/PhoneStarter" />
-            <option value="$PROJECT_DIR$/WatchStarter" />
+            <option value="$PROJECT_DIR$/TodosPhone" />
+            <option value="$PROJECT_DIR$/TodosWatch" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
