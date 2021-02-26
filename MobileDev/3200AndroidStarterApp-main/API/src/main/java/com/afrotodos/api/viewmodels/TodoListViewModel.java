@@ -5,7 +5,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.ObservableArrayList;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.database.ChildEventListener;
@@ -42,6 +41,11 @@ public class TodoListViewModel extends ViewModel {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                TodoItem task = snapshot.getValue(TodoItem.class);
+                task.id = snapshot.getKey();
+                int index = todoList.indexOf(task);
+                todoList.set(index, task);
+                Log.d("Index", "" + index);
                 Log.d("CHANGED", "A contact was changed");
             }
 
