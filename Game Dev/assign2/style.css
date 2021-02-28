@@ -19,9 +19,10 @@ p, label{
 }
 #menuHolder{
     float: left;
-    padding: 20px;
+    padding: 10px;
 }
-#mazeHolder{
+#instructions{
+    text-align: center;
 }
 body{
     background-image: url("images/background.jpg");

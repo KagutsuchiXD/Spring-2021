@@ -108,7 +108,7 @@ function calculateElapsedTime(time){
 }
 
 function renderProgressData(){
-    progressBar.innerHTML = "Time: " + timer.min + ":" + timer.sec + " ***** " + "Score: " + score;
+    progressBar.innerHTML = "Time: " + timer.min + ":" + timer.sec + " ******* " + "Score: " + score;
 }
 
 function showScoreBoard(){
@@ -129,8 +129,13 @@ function showScoreBoard(){
 
 function endGame(){
     if(gameOver === false){
+        let minutes = timer.min;
+        let seconds = timer.sec;
         let currentScore = {
-            ctime: timer,
+            ctime: {
+                min: minutes,
+                sec: seconds
+            },
             cscore: score,
             size: mazeSize
         }
