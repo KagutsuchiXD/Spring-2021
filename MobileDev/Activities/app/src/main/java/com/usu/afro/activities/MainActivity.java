@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
+    public static final int NEW_NOTE = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         Button button = findViewById(R.id.button);
         button.setOnClickListener((view) ->{
             Intent intent = new Intent(this, SecondActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, NEW_NOTE);
         });
     }
 
