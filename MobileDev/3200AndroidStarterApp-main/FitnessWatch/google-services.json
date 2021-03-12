@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "354505899726",
+    "project_id": "project1fitnesstracker",
+    "storage_bucket": "project1fitnesstracker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:354505899726:android:1e5c74d4307369fd7dda9f",
+        "android_client_info": {
+          "package_name": "com.connorosbornefitnesstrackerproject1.phoneapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "354505899726-djjnn5g95oji9473e9te6libvtcn8c20.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPreusRUL0r6AB569z0ZoK4UXGaqdeqdI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "354505899726-djjnn5g95oji9473e9te6libvtcn8c20.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:354505899726:android:6c7cb63511b32b807dda9f",
+        "android_client_info": {
+          "package_name": "com.connorosbornefitnesstrackerproject1.watchapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "354505899726-djjnn5g95oji9473e9te6libvtcn8c20.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPreusRUL0r6AB569z0ZoK4UXGaqdeqdI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "354505899726-djjnn5g95oji9473e9te6libvtcn8c20.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

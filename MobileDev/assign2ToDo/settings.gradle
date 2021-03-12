@@ -1,0 +1,4 @@
+include ':TodosWatch'
+include ':API'
+include ':TodosPhone'
+rootProject.name = "HW2TodoApp"

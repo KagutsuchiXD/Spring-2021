@@ -1,4 +1,4 @@
-include ':TodosWatch'
+include ':FitnessWatch'
 include ':API'
-include ':TodosPhone'
-rootProject.name = "HW2TodoApp"
+include ':FitnessPhone'
+rootProject.name = "Project1FitnessTracker"
