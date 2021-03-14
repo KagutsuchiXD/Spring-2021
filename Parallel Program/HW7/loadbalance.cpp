@@ -36,6 +36,8 @@ int main(int argc, char** argv){
 
     srand(time(NULL) + rank);
 
+    std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+
     if(rank == 0){
         hasToken = true;
     }
@@ -62,6 +64,8 @@ int main(int argc, char** argv){
                     tokenBlack = false;
                 }
             }
+
+            //Check to see if the program is ending
             if(rank != 0){
                 int terminateFlag;
                 MPI_Iprobe(0, 3, MCW, &terminateFlag, &mystatus);
@@ -71,9 +75,16 @@ int main(int argc, char** argv){
             }
             if(terminate){
                 cout << rank << " completed " << tasksCompleted << " tasks." << endl;
+                if (rank == 0){
+                    std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+                    std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+                    sleep(1);
+                    cout << "Program Completed in " << time_span.count() << "seconds." << endl;
+                }
                 break;
             }
 
+            //Check to see if tasks have been sent to the process and add them to the queue
             int flag;
             MPI_Iprobe(MPI_ANY_SOURCE, 0, MCW, &flag, &mystatus);
             while(flag){
@@ -160,6 +171,8 @@ int main(int argc, char** argv){
                     }
                 }
             }
+
+            //Check to see if program is ending
             if(rank != 0){
                 int terminateFlag;
                 MPI_Iprobe(0, 3, MCW, &terminateFlag, &mystatus);
