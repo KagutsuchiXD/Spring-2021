@@ -32,7 +32,7 @@ let Random = (function() {
     }
 
     return {
-        setSeed, setSeed,
+        setSeed: setSeed,
         next: next,
         nextDouble : nextDouble
     };

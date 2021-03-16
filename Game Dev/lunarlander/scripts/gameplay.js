@@ -6,18 +6,12 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
 
     let myKeyboard = input.Keyboard();
 
-    // let myText = objects.Text({
-    //     text: 'This is a test',
-    //     font: '32pt Arial',
-    //     fillStyle: 'rgba(255, 0, 0, 1)',
-    //     strokeStyle: 'rgba(0, 0, 0, 1)',
-    //     position: { x: 50, y: 100 }
-    // });
+    let myTerrain = objects.Terrain(1, graphics.canvas);
 
     let myLander = objects.Lander({
         imageSrc: 'assets/Lander.png',
-        center: { x: 100, y: 100 },
-        size: { width: 100, height: 100 },
+        center: { x: graphics.canvas.width / 2, y: 100 },
+        size: { width: graphics.canvas.width / 10, height: graphics.canvas.height / 10 },
         rotation : 0,
         moveRate: 500 / 1000, // pixels per millisecond
         rotateRate : 3.14159  // Radians per second

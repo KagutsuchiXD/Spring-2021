@@ -24,10 +24,15 @@ MyGame.graphics = (function() {
         context.restore();
     }
 
+    function drawTerrain(spec){
+
+    }
+
     let api = {
         get canvas() { return canvas; },
         clear: clear,
         drawTexture: drawTexture,
+        drawTerrain: drawTerrain,
         //drawText: drawText
     };
 

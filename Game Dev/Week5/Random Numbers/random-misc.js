@@ -128,7 +128,7 @@ let Random = (function () {
     setSeed(new Date().getTime());
 
     return {
-        setSeed, setSeed,
+        setSeed: setSeed,
         next: next,
         nextDouble: nextDouble,
         nextRange: nextRange,
