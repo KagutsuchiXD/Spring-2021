@@ -25,7 +25,14 @@ MyGame.graphics = (function() {
     }
 
     function drawTerrain(spec){
-
+        context.beginPath();
+        context.moveTo(spec[0].x, spec[0].y);
+        for (let i = 1; i < spec.length; i++){
+            context.lineTo(spec[i].x, spec[i].y);
+        }
+        context.closePath();
+        context.strokeStyle = 'rgb(0, 0, 0)';
+        context.stroke();
     }
 
     let api = {

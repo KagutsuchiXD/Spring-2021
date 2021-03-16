@@ -5,8 +5,8 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     let cancelNextRequest = true;
 
     let myKeyboard = input.Keyboard();
-
-    let myTerrain = objects.Terrain(1, graphics.canvas);
+    let level = 2;
+    let myTerrain = objects.Terrain(level, graphics.canvas);
 
     let myLander = objects.Lander({
         imageSrc: 'assets/Lander.png',
@@ -28,6 +28,7 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         graphics.clear();
 
         renderer.Lander.render(myLander);
+        renderer.Terrain.render(myTerrain);
         //renderer.Text.render(myText);
     }
 
