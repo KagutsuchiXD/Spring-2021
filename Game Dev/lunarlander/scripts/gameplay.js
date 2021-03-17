@@ -5,7 +5,7 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     let cancelNextRequest = true;
 
     let myKeyboard = input.Keyboard();
-    let level = 2;
+    let level = 1;
     let myTerrain = objects.Terrain(level, graphics.canvas);
 
     let myLander = objects.Lander({

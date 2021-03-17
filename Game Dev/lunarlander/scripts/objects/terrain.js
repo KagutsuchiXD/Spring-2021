@@ -48,8 +48,16 @@ MyGame.objects.Terrain = function(zones, canvas){
         let x = (start.x + end.x) / 2;
         let rg = Math.floor(((Math.random() + Math.random() +
             Math.random() + Math.random() + Math.random()) / 5) - 0.5) * 2;
-        let r = rg * Math.abs(end.x - start.x);
+        let s = Math.random() * (2) - 1;
+        let r = s * rg * Math.abs(end.x - start.x);
         let y = 0.5 * (start.y + end.y) + r;
+
+        if(y <= zoneHeight * 2){
+            y = Math.floor(Math.random() * ((zoneHeight * 2) - (canvas.height / 2)) + (canvas.height / 2));
+        }
+        if(y > canvas.height){
+            y = Math.floor(Math.random() * (canvas.height - (canvas.height - zoneHeight)) + (canvas.height - zoneHeight));
+        }
 
         return {
             x: x,
@@ -59,7 +67,7 @@ MyGame.objects.Terrain = function(zones, canvas){
     }
 
     function generateRMDPoints(start, end){
-        if ((end.x - start.x) <= 10){
+        if ((end.x - start.x) <= 15){
             points.push(start);
             points.push(end);
             return;
