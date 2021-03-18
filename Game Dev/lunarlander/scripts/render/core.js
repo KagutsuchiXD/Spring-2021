@@ -58,7 +58,7 @@ MyGame.graphics = (function() {
     }
 
     function drawText(spec) {
-        let output = spec.text + spec.value + spec.units;
+        let output = spec.text + spec.value.toFixed(2) + spec.units;
         context.save();
 
         context.font = spec.font;

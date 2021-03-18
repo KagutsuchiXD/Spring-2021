@@ -5,49 +5,49 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     let cancelNextRequest = true;
 
     let myKeyboard = input.Keyboard();
-    let level = 1;
+    let level = 2;
     let myTerrain = objects.Terrain(level, graphics.canvas);
 
     let myLander = objects.Lander({
-        thrust : 0.1,
+        thrust : 0.075,
         rotateRate : 3.14159 / 2,  // Radians per second
         center: { x: graphics.canvas.width / 2, y: 100 },
-        radius: graphics.canvas.width / 30,
+        radius: graphics.canvas.width / 40,
         rotation : -1.5708,
         velocity: {vx: 0, vy: 0},
         fuel: 20.0,
         imageSrc: 'assets/lander.png',
-        size: { width: graphics.canvas.width / 15, height: graphics.canvas.height / 15 }
+        size: { width: graphics.canvas.width / 20, height: graphics.canvas.height / 20 }
     });
 
     let speedometer = objects.Text({
         text: 'Speed: ',
         value: 0,
         units: ' m/s',
-        font: '32pt Arial',
+        font: '20pt Arial',
         fillStyle: 'rgba(255, 255, 255, 1)',
-        strokeStyle: 'rgba(255, 0, 0, 1)',
-        position: { x: 50, y: 50 }
+        strokeStyle: 'rgba(40, 224, 89, 1)',
+        position: { x: 25, y: 50 }
     });
 
     let fuelGage = objects.Text({
         text: 'Fuel: ',
-        value: 0,
+        value: 20.0,
         units: ' s',
-        font: '32pt Arial',
+        font: '20pt Arial',
         fillStyle: 'rgba(255, 255, 255, 1)',
-        strokeStyle: 'rgba(255, 0, 0, 1)',
-        position: { x: 50, y: 82 }
+        strokeStyle: 'rgba(40, 224, 89, 1)',
+        position: { x: 25, y: 75 }
     });
 
     let tiltAngle = objects.Text({
         text: 'Angle: ',
         value: 0,
         units: ' degrees',
-        font: '32pt Arial',
+        font: '20pt Arial',
         fillStyle: 'rgba(255, 255, 255, 1)',
-        strokeStyle: 'rgba(255, 0, 0, 1)',
-        position: { x: 50, y: 112 }
+        strokeStyle: 'rgba(40, 224, 89, 1)',
+        position: { x: 25, y: 95 }
     });
 
     function lineCircleIntersection(pt1, pt2, circle) {
@@ -80,19 +80,60 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         for (let i = 1; i < myTerrain.points.length; i++){
             detected = lineCircleIntersection(myTerrain.points[i-1], myTerrain.points[i], landerPerimeter);
             if (detected){
-                myLander.updateState(detected);
+                let survived = checkSurvival(myTerrain.points[i-1], myTerrain.points[i]);
+                if(survived){
+                    console.log("You Survived");
+                }
+                else{
+                    console.log("You Died");
+                }
+                myLander.updateState(detected, survived);
                 break;
             }
         }
+    }
+
+    function checkSurvival(pt1, pt2){
+        let angle = (myLander.rotation + 1.5708) * (180 / Math.PI);
+        return (pt1.landing === true && pt2.landing === true && myLander.speed <= 2 && angle < 5 && angle > -5);
     }
 
     function processInput(elapsedTime) {
         myKeyboard.update(elapsedTime);
     }
 
-    function update(elapsedTime) {
-        myLander.updatePosition(elapsedTime);
+    function updateLanderStatus(){
+        fuelGage.updateValue(myLander.fuel);
+        speedometer.updateValue(myLander.speed);
+        tiltAngle.updateValue((myLander.rotation + 1.5708) * (180 / Math.PI));
+
+        if(fuelGage.value <= 0){
+            fuelGage.strokeStyle = 'rgba(255, 0, 0, 1)';
+        }
+        else{
+            fuelGage.strokeStyle = 'rgba(40, 224, 89, 1)';
+        }
+        if(speedometer.value >= 2){
+            speedometer.strokeStyle = 'rgba(255, 0, 0, 1)';
+        }
+        else{
+            speedometer.strokeStyle = 'rgba(40, 224, 89, 1)';
+        }
+        if(tiltAngle.value > 5 || tiltAngle.value < -5){
+            tiltAngle.strokeStyle = 'rgba(255, 0, 0, 1)';
+        }
+        else{
+            tiltAngle.strokeStyle = 'rgba(40, 224, 89, 1)';
+        }
+
         landingDetection();
+    }
+
+    function update(elapsedTime) {
+        if(!myLander.landed){
+            myLander.updatePosition(elapsedTime);
+            updateLanderStatus();
+        }
     }
 
     function render() {
@@ -100,7 +141,9 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
 
         renderer.Lander.render(myLander);
         renderer.Terrain.render(myTerrain);
-        //renderer.Text.render(myText);
+        renderer.Text.render(speedometer);
+        renderer.Text.render(fuelGage);
+        renderer.Text.render(tiltAngle);
     }
 
     function gameLoop(time) {
@@ -124,7 +167,7 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
             // Stop the game loop by canceling the request for the next animation frame
             cancelNextRequest = true;
             // Then, return to the main menu
-            game.showScreen('main-menu');
+            game.showScreen('pause');
         });
     }
 

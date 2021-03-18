@@ -136,13 +136,11 @@ MyGame.objects.Terrain = function(zones, canvas){
         };
         landingZones.push(zone2);
         if (landingPoint1A.x < landingPoint2A.x){
-            console.log("1A:" + landingPoint1A.x + " 2A:" + landingPoint2A.x);
             generateRMDPoints(a, landingPoint1A);
             generateRMDPoints(landingPoint1B, landingPoint2A);
             generateRMDPoints(landingPoint2B, b);
         }
         else{
-            console.log("1A:" + landingPoint1A.x + " 2A:" + landingPoint2A.x);
             generateRMDPoints(a, landingPoint2A);
             generateRMDPoints(landingPoint2B, landingPoint1A);
             generateRMDPoints(landingPoint1B, b);

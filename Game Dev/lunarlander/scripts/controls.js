@@ -14,6 +14,9 @@ MyGame.screens['controls'] = (function(game) {
             storageControls = localStorage.getItem('controls');
             controls = JSON.parse(storageControls);
         }
+        document.getElementById("id-thrust").innerHTML = controls["up"] + " : Thrust";
+        document.getElementById("id-left-rotate").innerHTML = controls["left"] + " : Rotate Left";
+        document.getElementById("id-right-rotate").innerHTML = controls["right"] + " : Rotate Right";
 
         function changeUpControl(e){
             controls["up"] = e.key;

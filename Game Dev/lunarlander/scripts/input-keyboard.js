@@ -12,11 +12,11 @@ MyGame.input.Keyboard = function () {
         delete that.keys[e.key];
     }
 
-    that.update = function (elapsedTime) {
+    that.update = function (elapsedTime, spec) {
         for (let key in that.keys) {
             if (that.keys.hasOwnProperty(key)) {
                 if (that.handlers[key]) {
-                    that.handlers[key](elapsedTime);
+                    that.handlers[key](elapsedTime, spec);
                 }
             }
         }

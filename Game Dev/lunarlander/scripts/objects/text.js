@@ -13,7 +13,8 @@ MyGame.objects.Text = function(spec) {
         get units() { return spec.units; },
         get font() { return spec.font; },
         get fillStyle() { return spec.fillStyle; },
-        get strokeStyle() { return spec.strokeStyle; }
+        get strokeStyle() { return spec.strokeStyle; },
+        set strokeStyle(style) {spec.strokeStyle = style;}
     };
 
     return api;

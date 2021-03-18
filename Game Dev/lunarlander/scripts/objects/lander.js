@@ -37,12 +37,15 @@ MyGame.objects.Lander = function(spec) {
         let ax = Math.cos(spec.rotation) * spec.thrust * elapsedTime;
         let ay = Math.sin(spec.rotation) * spec.thrust * elapsedTime;
 
+        spec.fuel -= (elapsedTime / 1000);
+
         spec.velocity.vx += ax;
         spec.velocity.vy += ay;
     }
 
-    function updateState(land){
+    function updateState(land, alive){
         spec.landed = land;
+        spec.alive = alive;
     }
 
     let api = {
@@ -59,7 +62,7 @@ MyGame.objects.Lander = function(spec) {
         get radius() {return spec.radius},
         get alive() {return spec.alive},
         get landed() {return spec.landed},
-        get speed() {return Math.sqrt(Math.abs(Math.pow(spec.velocity.vx, 2)) * Math.abs(Math.pow(spec.velocity.vy, 2)))},
+        get speed() {return (Math.sqrt(Math.abs(Math.pow(spec.velocity.vx, 2)) + Math.abs(Math.pow(spec.velocity.vy, 2))) / 15)},
         get fuel() {return spec.fuel}
 
     };
