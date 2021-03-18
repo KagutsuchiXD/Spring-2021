@@ -9,15 +9,45 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     let myTerrain = objects.Terrain(level, graphics.canvas);
 
     let myLander = objects.Lander({
-        thrust : 0.2,
-        rotateRate : 3.14159,  // Radians per second
+        thrust : 0.1,
+        rotateRate : 3.14159 / 2,  // Radians per second
         center: { x: graphics.canvas.width / 2, y: 100 },
-        radius: Math.sqrt((graphics.canvas.width / 20) * (graphics.canvas.width / 20) * 2),
+        radius: graphics.canvas.width / 30,
         rotation : -1.5708,
         velocity: {vx: 0, vy: 0},
         fuel: 20.0,
-        imageSrc: 'assets/lander.jpg',
-        size: { width: graphics.canvas.width / 10, height: graphics.canvas.height / 10 }
+        imageSrc: 'assets/lander.png',
+        size: { width: graphics.canvas.width / 15, height: graphics.canvas.height / 15 }
+    });
+
+    let speedometer = objects.Text({
+        text: 'Speed: ',
+        value: 0,
+        units: ' m/s',
+        font: '32pt Arial',
+        fillStyle: 'rgba(255, 255, 255, 1)',
+        strokeStyle: 'rgba(255, 0, 0, 1)',
+        position: { x: 50, y: 50 }
+    });
+
+    let fuelGage = objects.Text({
+        text: 'Fuel: ',
+        value: 0,
+        units: ' s',
+        font: '32pt Arial',
+        fillStyle: 'rgba(255, 255, 255, 1)',
+        strokeStyle: 'rgba(255, 0, 0, 1)',
+        position: { x: 50, y: 82 }
+    });
+
+    let tiltAngle = objects.Text({
+        text: 'Angle: ',
+        value: 0,
+        units: ' degrees',
+        font: '32pt Arial',
+        fillStyle: 'rgba(255, 255, 255, 1)',
+        strokeStyle: 'rgba(255, 0, 0, 1)',
+        position: { x: 50, y: 112 }
     });
 
     function lineCircleIntersection(pt1, pt2, circle) {
@@ -47,8 +77,12 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
             radius: myLander.radius
         }
         let detected = false;
-        for (let i = 1; i < myTerrain.length; i++){
-            detected = lineCircleIntersection(myTerrain[i-1], myTerrain[i], landerPerimeter);
+        for (let i = 1; i < myTerrain.points.length; i++){
+            detected = lineCircleIntersection(myTerrain.points[i-1], myTerrain.points[i], landerPerimeter);
+            if (detected){
+                myLander.updateState(detected);
+                break;
+            }
         }
     }
 
@@ -58,6 +92,7 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
 
     function update(elapsedTime) {
         myLander.updatePosition(elapsedTime);
+        landingDetection();
     }
 
     function render() {
@@ -82,9 +117,9 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     }
 
     function initialize() {
-        myKeyboard.register('w', myLander.thrust);
-        myKeyboard.register('a', myLander.rotateLeft);
-        myKeyboard.register('d', myLander.rotateRight);
+        myKeyboard.register(controls["up"], myLander.thrust);
+        myKeyboard.register(controls["left"], myLander.rotateLeft);
+        myKeyboard.register(controls["right"], myLander.rotateRight);
         myKeyboard.register('Escape', function() {
             // Stop the game loop by canceling the request for the next animation frame
             cancelNextRequest = true;
@@ -94,6 +129,7 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     }
 
     function run() {
+        initialize();
         lastTimeStamp = performance.now();
         cancelNextRequest = false;
         requestAnimationFrame(gameLoop);

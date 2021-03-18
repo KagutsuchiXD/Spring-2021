@@ -3,6 +3,15 @@ MyGame.graphics = (function() {
 
     let canvas = document.getElementById('id-canvas');
     let context = canvas.getContext('2d');
+    let pad = function(imageSource) {
+        let image = new Image();
+        image.isReady = false;
+        image.onload = function() {
+            this.isReady = true;
+        };
+        image.src = imageSource;
+        return image;
+    }('assets/landingpad.jpg');
 
     function clear() {
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -27,8 +36,8 @@ MyGame.graphics = (function() {
     function drawTerrain(spec){
         context.beginPath();
         context.moveTo(0, canvas.height);
-        for (let i = 0; i < spec.length; i++){
-            context.lineTo(spec[i].x, spec[i].y);
+        for (let i = 0; i < spec.points.length; i++){
+            context.lineTo(spec.points[i].x, spec.points[i].y);
         }
         context.lineTo(canvas.width, canvas.height);
         context.closePath();
@@ -37,6 +46,30 @@ MyGame.graphics = (function() {
         context.fillStyle = 'rgb(0, 0, 0)';
         context.stroke();
         context.fill();
+
+        for (let i = 0; i < spec.landingZones.length; i++){
+            context.drawImage(
+                pad,
+                spec.landingZones[i].pt1.x,
+                spec.landingZones[i].pt1.y,
+                canvas.width * 0.15,
+                canvas.height / 40)
+        }
+    }
+
+    function drawText(spec) {
+        let output = spec.text + spec.value + spec.units;
+        context.save();
+
+        context.font = spec.font;
+        context.fillStyle = spec.fillStyle;
+        context.strokeStyle = spec.strokeStyle;
+        context.textBaseline = 'top';
+
+        context.fillText(output, spec.position.x, spec.position.y);
+        context.strokeText(output, spec.position.x, spec.position.y);
+
+        context.restore();
     }
 
     let api = {
@@ -44,7 +77,7 @@ MyGame.graphics = (function() {
         clear: clear,
         drawTexture: drawTexture,
         drawTerrain: drawTerrain,
-        //drawText: drawText
+        drawText: drawText
     };
 
     return api;

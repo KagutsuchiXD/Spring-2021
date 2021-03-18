@@ -11,12 +11,13 @@
             <ul class = "menu">
                 <li><button id = "id-new-game">New&nbsp;Game</button></li>
                 <li><button id = "id-high-scores">High&nbsp;Scores</button></li>
-                <li><button id = "id-help">Help</button></li>
+                <li><button id = "id-controls">Controls</button></li>
                 <li><button id = "id-about">About</button></li>
             </ul>
         </div>
         <div id = "game-play" class = "screen">
-            <canvas id = "id-canvas" width = "500" height = "500">
+            <canvas id = "id-canvas" width = "500" height = "500"
+                    style = "width: 100%; height: 100%;">
             </canvas>
         </div>
         <div id = "high-scores" class = "screen">
@@ -27,13 +28,13 @@
                 <li><button id = "id-high-scores-back">Back</button></li>
             </ul>
         </div>
-        <div id = "help" class = "screen">
-            <h1>Help</h1>
-            <p>This is some help on how to play the game</p>
-            <p>&uarr; : Thrust</p>
-            <p>&larr; &rarr; : Rotate Left or Right</p>
+        <div id = "controls" class = "screen">
+            <h1>Controls</h1>
             <ul class = "menu">
-                <li><button id = "id-help-back">Back</button></li>
+                <li><button id = "id-thrust" value="">&uarr; : Thrust</button></li>
+                <li><button id = "id-left-rotate">&larr; Rotate Left</button></li>
+                <li><button id = "id-right-rotate">&rarr; : Rotate Right</button></li>
+                <li><button id = "id-controls-back">Back</button></li>
             </ul>
         </div>
         <div id = "about" class = "screen">
@@ -53,13 +54,18 @@
             objects: {},
             render: []
         };
+        let controls = {
+            "up": null,
+            "left": null,
+            "right": null
+        };
     </script>
     <script src = "scripts/objects/lander.js"></script>
-<!--    <script src = "scripts/objects/text.js"></script>-->
+    <script src = "scripts/objects/text.js"></script>
     <script src = "scripts/objects/terrain.js"></script>
     <script src = "scripts/render/core.js"></script>
     <script src = "scripts/render/lander.js"></script>
-<!--    <script src = "scripts/render/text.js"></script>-->
+    <script src = "scripts/render/text.js"></script>
     <script src = "scripts/render/terrain.js"></script>
     <script src = "scripts/input-keyboard.js"></script>
 
@@ -67,7 +73,7 @@
     <script src = "scripts/mainmenu.js"></script>
     <script src = "scripts/gameplay.js"></script>
     <script src = "scripts/highscores.js"></script>
-    <script src = "scripts/help.js"></script>
+    <script src = "scripts/controls.js"></script>
     <script src = "scripts/about.js"></script>
 
 </body>

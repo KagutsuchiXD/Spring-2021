@@ -8,23 +8,29 @@ MyGame.objects.Lander = function(spec) {
     };
     image.src = spec.imageSrc;
 
-    let alive = true;
-    let landed = false;
+    spec.alive = true;
+    spec.landed = false;
 
     function updatePosition(elapsedTime){
-        spec.velocity.vy += (9 * elapsedTime/ 1000);
+        if(!spec.landed){
+            spec.velocity.vy += (20 * elapsedTime/ 1000);
 
-        spec.center.x += (spec.velocity.vx * (elapsedTime/ 1000));
-        spec.center.y += (spec.velocity.vy * (elapsedTime/ 1000));
+            spec.center.x += (spec.velocity.vx * (elapsedTime/ 1000));
+            spec.center.y += (spec.velocity.vy * (elapsedTime/ 1000));
+        }
     }
 
 
     function rotateRight(elapsedTime) {
-        spec.rotation += spec.rotateRate * (elapsedTime / 1000);
+        if(!spec.landed){
+            spec.rotation += spec.rotateRate * (elapsedTime / 1000);
+        }
     }
 
     function rotateLeft(elapsedTime) {
-        spec.rotation -= spec.rotateRate * (elapsedTime / 1000);
+        if(!spec.landed){
+            spec.rotation -= spec.rotateRate * (elapsedTime / 1000);
+        }
     }
 
     function thrust(elapsedTime) {
@@ -35,19 +41,24 @@ MyGame.objects.Lander = function(spec) {
         spec.velocity.vy += ay;
     }
 
+    function updateState(land){
+        spec.landed = land;
+    }
+
     let api = {
         rotateLeft: rotateLeft,
         rotateRight: rotateRight,
         thrust: thrust,
         updatePosition: updatePosition,
+        updateState: updateState,
         get imageReady() { return imageReady; },
         get rotation() { return spec.rotation; },
         get image() { return image; },
         get center() { return spec.center; },
         get size() { return spec.size; },
         get radius() {return spec.radius},
-        get alive() {return alive},
-        get landed() {return landed},
+        get alive() {return spec.alive},
+        get landed() {return spec.landed},
         get speed() {return Math.sqrt(Math.abs(Math.pow(spec.velocity.vx, 2)) * Math.abs(Math.pow(spec.velocity.vy, 2)))},
         get fuel() {return spec.fuel}
 

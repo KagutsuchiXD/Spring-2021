@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../1gameloop/.idea/GameLoop.iml" filepath="$PROJECT_DIR$/../1gameloop/.idea/GameLoop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../assign2/.idea/assign2.iml" filepath="$PROJECT_DIR$/../assign2/.idea/assign2.iml" />
       <module fileurl="file://$PROJECT_DIR$/../assign2/assign2_scripts/.idea/assign2_scripts.iml" filepath="$PROJECT_DIR$/../assign2/assign2_scripts/.idea/assign2_scripts.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/lunarlander.iml" filepath="$PROJECT_DIR$/.idea/lunarlander.iml" />
     </modules>

@@ -40,11 +40,6 @@ MyGame.graphics = (function() {
         context.strokeStyle = spec.strokeStyle;
         context.textBaseline = 'top';
 
-        context.translate(spec.position.x, spec.position.y);
-        context.rotate(spec.rotation);
-        context.translate(-spec.position.x, -spec.position.y);
-
-
         context.fillText(spec.text, spec.position.x, spec.position.y);
         context.strokeText(spec.text, spec.position.x, spec.position.y);
 

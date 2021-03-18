@@ -5,8 +5,8 @@ body {
 #game {
     margin: auto;
     display: block;
-    width: 500px;
-    height: 500px;
+    width: 50%;
+    height: 50%;
     border-style: solid;
     border-width: 1px;
     background-color: rgb(239,239,251);
@@ -47,14 +47,14 @@ ul.menu li button {
     color: #CECEF6;
     width: 10em;
     height: 1.5em;
-    background: #0404B4;
+    background: #0000;
     border: 0.1em solid rgb(255, 0, 0);
     border-radius: 0.5em;
     box-shadow: 0.2em 0.2em 0.3em rgb(0, 0, 0);
 }
 
 ul.menu li button:hover {
-    background: #2E2EFE;
+    background: #000;
 }
 
 ul.menu li button:active {

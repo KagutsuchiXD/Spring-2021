@@ -10,8 +10,8 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     let myText = objects.Text({
         text: 'This is a test',
         font: '32pt Arial',
-        fillStyle: 'rgba(255, 0, 0, 1)',
-        strokeStyle: 'rgba(0, 0, 0, 1)',
+        fillStyle: 'rgba(255, 255, 255, 1)',
+        strokeStyle: 'rgba(255, 0, 0, 1)',
         position: { x: 50, y: 100 }
     });
 
