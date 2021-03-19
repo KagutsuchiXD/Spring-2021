@@ -8,6 +8,7 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
 
     let level = 2;
     let score = 0;
+    let scored = false;
     let myTerrain = objects.Terrain(level, graphics.canvas);
 
     let myLander = objects.Lander({
@@ -101,7 +102,29 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     }
 
     function calculateScore(){
-        score += myLander.fuel * 1000;
+        let swap = false;
+        if(level > 1){
+            score += (myLander.fuel * 1000) / level;
+        }
+        else{
+            score += myLander.fuel * 1000;
+            for(let i = 5; i > 0; i--){
+                if(scores.hasOwnProperty(i.toString())){
+                    if(score > parseInt(scores[i.toString()])){
+                        if(!swap){
+                            scores[i.toString()] = score.toString();
+                            swap = true;
+                        }
+                        else{
+                            let temp = parseInt(scores[i.toString()]);
+                            scores[(i+1).toString()] = temp.toString();
+                            scores[i.toString()] = score.toString();
+                        }
+                    }
+                }
+            }
+            localStorage['scores'] = JSON.stringify(scores);
+        }
     }
 
     function processInput(elapsedTime) {
@@ -140,8 +163,18 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
             myLander.updatePosition(elapsedTime);
             updateLanderStatus();
         }
-        else{
+        else if(level > 1 && myLander.alive){
             calculateScore();
+            cancelNextRequest = true;
+            game.showScreen('transition');
+        }
+        else if(score > 0){
+            calculateScore();
+            cancelNextRequest = true;
+            game.showScreen('main-menu');
+        }
+        else{
+            parseInt(scores[score])
         }
     }
 
@@ -170,6 +203,56 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
 
     function newGame(){
         level = 2;
+        score = 0;
+        scored = false
+        myTerrain = objects.Terrain(level, graphics.canvas);
+
+        myLander = objects.Lander({
+            thrust : 0.09,
+            rotateRate : 3.14159 / 2,  // Radians per second
+            center: { x: graphics.canvas.width / 2, y: 100 },
+            radius: graphics.canvas.width / 40,
+            rotation : -1.5708,
+            velocity: {vx: 0, vy: 0},
+            fuel: 20.0,
+            imageSrc: 'assets/lander.png',
+            size: { width: graphics.canvas.width / 20, height: graphics.canvas.height / 20 }
+        });
+
+        speedometer = objects.Text({
+            text: 'Speed: ',
+            value: 0,
+            units: ' m/s',
+            font: '20pt Arial',
+            fillStyle: 'rgba(255, 255, 255, 1)',
+            strokeStyle: 'rgba(40, 224, 89, 1)',
+            position: { x: 25, y: 50 }
+        });
+
+        fuelGage = objects.Text({
+            text: 'Fuel: ',
+            value: 20.0,
+            units: ' s',
+            font: '20pt Arial',
+            fillStyle: 'rgba(255, 255, 255, 1)',
+            strokeStyle: 'rgba(40, 224, 89, 1)',
+            position: { x: 25, y: 75 }
+        });
+
+        tiltAngle = objects.Text({
+            text: 'Angle: ',
+            value: 0,
+            units: ' degrees',
+            font: '20pt Arial',
+            fillStyle: 'rgba(255, 255, 255, 1)',
+            strokeStyle: 'rgba(40, 224, 89, 1)',
+            position: { x: 25, y: 95 }
+        });
+    }
+
+    function nextLevel(){
+        level -= 1;
+
         myTerrain = objects.Terrain(level, graphics.canvas);
 
         myLander = objects.Lander({
@@ -237,7 +320,8 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     return {
         initialize : initialize,
         run : run,
-        newGame: newGame
+        newGame: newGame,
+        nextLevel: nextLevel
     };
 
 }(MyGame.game, MyGame.objects, MyGame.render, MyGame.graphics, MyGame.input));

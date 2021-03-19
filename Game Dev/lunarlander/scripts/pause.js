@@ -1,4 +1,4 @@
-MyGame.screens['pause'] = (function(game, screens) {
+MyGame.screens['pause'] = (function(game) {
     'use strict';
 
     function initialize() {
@@ -18,4 +18,4 @@ MyGame.screens['pause'] = (function(game, screens) {
         initialize : initialize,
         run : run
     };
-}(MyGame.game, MyGame.screens));
+}(MyGame.game));

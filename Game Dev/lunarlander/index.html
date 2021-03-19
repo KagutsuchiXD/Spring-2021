@@ -23,8 +23,7 @@
         </div>
         <div id = "high-scores" class = "screen">
             <h1>High Scores</h1>
-            <ol id = "scores">
-            </ol>
+            <ol id = "scores"></ol>
             <ul class = "menu">
                 <li><button id = "id-high-scores-back">Back</button></li>
             </ul>
@@ -54,6 +53,13 @@
                 <li><button id = "id-quit">Quit</button></li>
             </ul>
         </div>
+        <div id = "transition" class = "screen">
+            <h1>Next Level Will Begin Shortly</h1>
+            <h1 id="timer"></h1>
+            <ul class = "menu">
+                <li><button id = "id-transition-quit">Quit</button></li>
+            </ul>
+        </div>
     </div>
 
     <script>
@@ -68,7 +74,13 @@
             "left": null,
             "right": null
         };
-        let scores;
+        let scores = {
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 0,
+            "5": 0
+        };
     </script>
     <script src = "scripts/objects/lander.js"></script>
     <script src = "scripts/objects/text.js"></script>
@@ -86,6 +98,7 @@
     <script src = "scripts/controls.js"></script>
     <script src = "scripts/about.js"></script>
     <script src = "scripts/pause.js"></script>
+    <script src="scripts/transition.js"></script>
 
 </body>
 </html>
