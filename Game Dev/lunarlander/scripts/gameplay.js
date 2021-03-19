@@ -5,11 +5,13 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     let cancelNextRequest = true;
 
     let myKeyboard = input.Keyboard();
+
     let level = 2;
+    let score = 0;
     let myTerrain = objects.Terrain(level, graphics.canvas);
 
     let myLander = objects.Lander({
-        thrust : 0.075,
+        thrust : 0.09,
         rotateRate : 3.14159 / 2,  // Radians per second
         center: { x: graphics.canvas.width / 2, y: 100 },
         radius: graphics.canvas.width / 40,
@@ -98,6 +100,10 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         return (pt1.landing === true && pt2.landing === true && myLander.speed <= 2 && angle < 5 && angle > -5);
     }
 
+    function calculateScore(){
+        score += myLander.fuel * 1000;
+    }
+
     function processInput(elapsedTime) {
         myKeyboard.update(elapsedTime);
     }
@@ -134,6 +140,9 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
             myLander.updatePosition(elapsedTime);
             updateLanderStatus();
         }
+        else{
+            calculateScore();
+        }
     }
 
     function render() {
@@ -159,6 +168,53 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         }
     }
 
+    function newGame(){
+        level = 2;
+        myTerrain = objects.Terrain(level, graphics.canvas);
+
+        myLander = objects.Lander({
+            thrust : 0.09,
+            rotateRate : 3.14159 / 2,  // Radians per second
+            center: { x: graphics.canvas.width / 2, y: 100 },
+            radius: graphics.canvas.width / 40,
+            rotation : -1.5708,
+            velocity: {vx: 0, vy: 0},
+            fuel: 20.0,
+            imageSrc: 'assets/lander.png',
+            size: { width: graphics.canvas.width / 20, height: graphics.canvas.height / 20 }
+        });
+
+        speedometer = objects.Text({
+            text: 'Speed: ',
+            value: 0,
+            units: ' m/s',
+            font: '20pt Arial',
+            fillStyle: 'rgba(255, 255, 255, 1)',
+            strokeStyle: 'rgba(40, 224, 89, 1)',
+            position: { x: 25, y: 50 }
+        });
+
+        fuelGage = objects.Text({
+            text: 'Fuel: ',
+            value: 20.0,
+            units: ' s',
+            font: '20pt Arial',
+            fillStyle: 'rgba(255, 255, 255, 1)',
+            strokeStyle: 'rgba(40, 224, 89, 1)',
+            position: { x: 25, y: 75 }
+        });
+
+        tiltAngle = objects.Text({
+            text: 'Angle: ',
+            value: 0,
+            units: ' degrees',
+            font: '20pt Arial',
+            fillStyle: 'rgba(255, 255, 255, 1)',
+            strokeStyle: 'rgba(40, 224, 89, 1)',
+            position: { x: 25, y: 95 }
+        });
+    }
+
     function initialize() {
         myKeyboard.register(controls["up"], myLander.thrust);
         myKeyboard.register(controls["left"], myLander.rotateLeft);
@@ -180,7 +236,8 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
 
     return {
         initialize : initialize,
-        run : run
+        run : run,
+        newGame: newGame
     };
 
 }(MyGame.game, MyGame.objects, MyGame.render, MyGame.graphics, MyGame.input));

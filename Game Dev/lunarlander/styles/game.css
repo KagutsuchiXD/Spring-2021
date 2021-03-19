@@ -2,6 +2,10 @@ body {
     margin: 0;
 }
 
+h1, p {
+    color: azure;
+}
+
 #game {
     margin: auto;
     display: block;

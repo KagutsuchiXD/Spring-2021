@@ -1,10 +1,12 @@
-MyGame.screens['main-menu'] = (function(game) {
+MyGame.screens['main-menu'] = (function(game, screens) {
     'use strict';
 
     function initialize() {
         document.getElementById('id-new-game').addEventListener(
             'click',
-            function() {game.showScreen('game-play'); });
+            function() {
+                screens['game-play'].newGame();
+                game.showScreen('game-play');});
 
         document.getElementById('id-high-scores').addEventListener(
             'click',
@@ -26,4 +28,4 @@ MyGame.screens['main-menu'] = (function(game) {
         initialize : initialize,
         run : run
     };
-}(MyGame.game));
+}(MyGame.game, MyGame.screens));

@@ -45,15 +45,21 @@ MyGame.screens['controls'] = (function(game) {
 
         document.getElementById('id-thrust').addEventListener(
             'click',
-            function() { window.addEventListener('keydown', changeUpControl); });
+            function() {
+                document.getElementById("id-thrust").innerHTML = "Awaiting Input";
+                window.addEventListener('keydown', changeUpControl); });
 
         document.getElementById('id-left-rotate').addEventListener(
             'click',
-            function() { window.addEventListener('keydown', changeLeftControl); });
+            function() {
+                document.getElementById("id-left-rotate").innerHTML = "Awaiting Input";
+                window.addEventListener('keydown', changeLeftControl); });
 
         document.getElementById('id-right-rotate').addEventListener(
             'click',
-            function() { window.addEventListener('keydown', changeRightControl); });
+            function() {
+                document.getElementById("id-right-rotate").innerHTML = "Awaiting Input";
+                window.addEventListener('keydown', changeRightControl); });
     }
 
     function run() {
