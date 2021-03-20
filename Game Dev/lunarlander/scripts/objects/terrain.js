@@ -20,6 +20,10 @@ MyGame.objects.Terrain = function(zones, canvas){
     }
 
     function generateLandingZone1(){
+        let platFormWidth = zoneWidth;
+        if (zones === 1){
+            platFormWidth = zoneWidth / 2;
+        }
         let x1 = Math.floor(Math.random() * (canvas.width - (2 * zoneWidth))) + zoneWidth;
         let y1 = Math.floor(Math.random() * ((canvas.height - zoneHeight) - (canvas.height / 2))) + (canvas.height / 2);
         let x2 = x1 + zoneWidth;
@@ -51,8 +55,7 @@ MyGame.objects.Terrain = function(zones, canvas){
             dist = 10;
         }
         let x = (start.x + end.x) / 2;
-        let rg = Math.floor(((Math.random() + Math.random() +
-            Math.random() + Math.random() + Math.random()) / 5) - 0.5) * 2;
+        let rg = Random.nextGaussian(0, Math.sqrt(1));
         let s = Math.random() * (dist / 5) - 1;
         let r = s * rg * Math.abs(end.x - start.x);
         let y = 0.5 * (start.y + end.y) + r;

@@ -102,28 +102,52 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     }
 
     function calculateScore(){
-        let swap = false;
-        if(level > 1){
-            score += (myLander.fuel * 1000) / level;
-        }
-        else{
-            score += myLander.fuel * 1000;
-            for(let i = 5; i > 0; i--){
-                if(scores.hasOwnProperty(i.toString())){
-                    if(score > parseInt(scores[i.toString()])){
-                        if(!swap){
-                            scores[i.toString()] = score.toString();
-                            swap = true;
-                        }
-                        else{
-                            let temp = parseInt(scores[i.toString()]);
-                            scores[(i+1).toString()] = temp.toString();
-                            scores[i.toString()] = score.toString();
+        if (myLander.alive){
+            let swap = false;
+            if(level > 1){
+                score += (myLander.fuel * 1000) / level;
+            }
+            else{
+                score += myLander.fuel * 1000;
+                for(let i = 5; i > 0; i--){
+                    if(scores.hasOwnProperty(i.toString())){
+                        if(score > parseInt(scores[i.toString()])){
+                            if(!swap){
+                                scores[i.toString()] = score.toString();
+                                swap = true;
+                            }
+                            else{
+                                let temp = parseInt(scores[i.toString()]);
+                                scores[(i+1).toString()] = temp.toString();
+                                scores[i.toString()] = score.toString();
+                            }
                         }
                     }
                 }
+                localStorage['scores'] = JSON.stringify(scores);
             }
-            localStorage['scores'] = JSON.stringify(scores);
+        }
+        else{
+            score += 0;
+            if (score > 0){
+                let swap = false;
+                for(let i = 5; i > 0; i--){
+                    if(scores.hasOwnProperty(i.toString())){
+                        if(score > parseInt(scores[i.toString()])){
+                            if(!swap){
+                                scores[i.toString()] = score.toString();
+                                swap = true;
+                            }
+                            else{
+                                let temp = parseInt(scores[i.toString()]);
+                                scores[(i+1).toString()] = temp.toString();
+                                scores[i.toString()] = score.toString();
+                            }
+                        }
+                    }
+                }
+                localStorage['scores'] = JSON.stringify(scores);
+            }
         }
     }
 
@@ -174,7 +198,8 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
             game.showScreen('main-menu');
         }
         else{
-            parseInt(scores[score])
+            cancelNextRequest = true;
+            game.showScreen('main-menu');
         }
     }
 
