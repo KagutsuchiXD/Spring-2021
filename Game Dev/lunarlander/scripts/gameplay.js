@@ -1,4 +1,4 @@
-MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input) {
+MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input, systems) {
     'use strict';
 
     let lastTimeStamp = performance.now();
@@ -6,9 +6,18 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
 
     let myKeyboard = input.Keyboard();
 
+    let resultTimer = 3;
     let level = 2;
     let score = 0;
-    let scored = false;
+    let particleSystem = systems.ParticleSystem({
+        center: {x: graphics.canvas.width / 2, y: 100 },
+        size: { mean: 10, stdev: 4 },
+        speed: { mean: 50, stdev: 25 },
+        lifetime: { mean: 1, stdev: 1 }
+    });
+
+    let renderParticles = renderer.ParticleSystem(particleSystem, graphics, 'assets/fire.png');
+
     let myTerrain = objects.Terrain(level, graphics.canvas);
 
     let myLander = objects.Lander({
@@ -21,11 +30,11 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         fuel: 20.0,
         imageSrc: 'assets/lander.png',
         size: { width: graphics.canvas.width / 20, height: graphics.canvas.height / 20 }
-    });
+    }, particleSystem);
 
     let speedometer = objects.Text({
         text: 'Speed: ',
-        value: 0,
+        value: 0.0,
         units: ' m/s',
         font: '20pt Arial',
         fillStyle: 'rgba(255, 255, 255, 1)',
@@ -45,13 +54,23 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
 
     let tiltAngle = objects.Text({
         text: 'Angle: ',
-        value: 0,
+        value: 0.0,
         units: ' degrees',
         font: '20pt Arial',
         fillStyle: 'rgba(255, 255, 255, 1)',
         strokeStyle: 'rgba(40, 224, 89, 1)',
-        position: { x: 25, y: 95 }
+        position: { x: 25, y: 100 }
     });
+
+    let result = objects.Text({
+        text: "YOU DIED",
+        value: 0.0,
+        units: "",
+        font: '100pt Arial',
+        fillStyle: 'rgba(255, 255, 255, 1)',
+        strokeStyle: 'rgba(255, 0, 0, 1)',
+        position: { x: 400, y: graphics.canvas.height / 2 }
+    })
 
     function lineCircleIntersection(pt1, pt2, circle) {
         let v1 = { x: pt2.x - pt1.x, y: pt2.y - pt1.y };
@@ -89,6 +108,7 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
                 }
                 else{
                     console.log("You Died");
+                    particleSystem.shipCrash();
                 }
                 myLander.updateState(detected, survived);
                 break;
@@ -103,51 +123,29 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
 
     function calculateScore(){
         if (myLander.alive){
-            let swap = false;
-            if(level > 1){
-                score += (myLander.fuel * 1000) / level;
-            }
-            else{
-                score += myLander.fuel * 1000;
-                for(let i = 5; i > 0; i--){
-                    if(scores.hasOwnProperty(i.toString())){
-                        if(score > parseInt(scores[i.toString()])){
-                            if(!swap){
-                                scores[i.toString()] = score.toString();
-                                swap = true;
-                            }
-                            else{
-                                let temp = parseInt(scores[i.toString()]);
-                                scores[(i+1).toString()] = temp.toString();
-                                scores[i.toString()] = score.toString();
-                            }
-                        }
-                    }
-                }
-                localStorage['scores'] = JSON.stringify(scores);
-            }
+            score += (myLander.fuel * 1000) / level;
         }
         else{
             score += 0;
-            if (score > 0){
-                let swap = false;
-                for(let i = 5; i > 0; i--){
-                    if(scores.hasOwnProperty(i.toString())){
-                        if(score > parseInt(scores[i.toString()])){
-                            if(!swap){
-                                scores[i.toString()] = score.toString();
-                                swap = true;
-                            }
-                            else{
-                                let temp = parseInt(scores[i.toString()]);
-                                scores[(i+1).toString()] = temp.toString();
-                                scores[i.toString()] = score.toString();
-                            }
+        }
+        if (score > 0){
+            let swap = false;
+            for(let i = 5; i > 0; i--){
+                if(scores.hasOwnProperty(i.toString())){
+                    if(score > parseInt(scores[i.toString()])){
+                        if(!swap){
+                            scores[i.toString()] = score.toString();
+                            swap = true;
+                        }
+                        else{
+                            let temp = parseInt(scores[i.toString()]);
+                            scores[(i+1).toString()] = temp.toString();
+                            scores[i.toString()] = score.toString();
                         }
                     }
                 }
-                localStorage['scores'] = JSON.stringify(scores);
             }
+            localStorage['scores'] = JSON.stringify(scores);
         }
     }
 
@@ -159,6 +157,7 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         fuelGage.updateValue(myLander.fuel);
         speedometer.updateValue(myLander.speed);
         tiltAngle.updateValue((myLander.rotation + 1.5708) * (180 / Math.PI));
+        particleSystem.center = myLander.center;
 
         if(fuelGage.value <= 0){
             fuelGage.strokeStyle = 'rgba(255, 0, 0, 1)';
@@ -183,6 +182,7 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     }
 
     function update(elapsedTime) {
+        particleSystem.update(elapsedTime);
         if(!myLander.landed){
             myLander.updatePosition(elapsedTime);
             updateLanderStatus();
@@ -192,12 +192,12 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
             cancelNextRequest = true;
             game.showScreen('transition');
         }
-        else if(score > 0){
-            calculateScore();
-            cancelNextRequest = true;
-            game.showScreen('main-menu');
+        else if(resultTimer > 0){
+            resultTimer -= (elapsedTime / 1000);
+            particleSystem.shipCrash();
         }
         else{
+            calculateScore();
             cancelNextRequest = true;
             game.showScreen('main-menu');
         }
@@ -211,6 +211,10 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         renderer.Text.render(speedometer);
         renderer.Text.render(fuelGage);
         renderer.Text.render(tiltAngle);
+        if(!myLander.alive){
+            renderer.Text.render(result);
+        }
+        renderParticles.render();
     }
 
     function gameLoop(time) {
@@ -229,55 +233,16 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     function newGame(){
         level = 2;
         score = 0;
-        scored = false
-        myTerrain = objects.Terrain(level, graphics.canvas);
-
-        myLander = objects.Lander({
-            thrust : 0.09,
-            rotateRate : 3.14159 / 2,  // Radians per second
-            center: { x: graphics.canvas.width / 2, y: 100 },
-            radius: graphics.canvas.width / 40,
-            rotation : -1.5708,
-            velocity: {vx: 0, vy: 0},
-            fuel: 20.0,
-            imageSrc: 'assets/lander.png',
-            size: { width: graphics.canvas.width / 20, height: graphics.canvas.height / 20 }
-        });
-
-        speedometer = objects.Text({
-            text: 'Speed: ',
-            value: 0,
-            units: ' m/s',
-            font: '20pt Arial',
-            fillStyle: 'rgba(255, 255, 255, 1)',
-            strokeStyle: 'rgba(40, 224, 89, 1)',
-            position: { x: 25, y: 50 }
-        });
-
-        fuelGage = objects.Text({
-            text: 'Fuel: ',
-            value: 20.0,
-            units: ' s',
-            font: '20pt Arial',
-            fillStyle: 'rgba(255, 255, 255, 1)',
-            strokeStyle: 'rgba(40, 224, 89, 1)',
-            position: { x: 25, y: 75 }
-        });
-
-        tiltAngle = objects.Text({
-            text: 'Angle: ',
-            value: 0,
-            units: ' degrees',
-            font: '20pt Arial',
-            fillStyle: 'rgba(255, 255, 255, 1)',
-            strokeStyle: 'rgba(40, 224, 89, 1)',
-            position: { x: 25, y: 95 }
-        });
+        resetScreen();
     }
 
     function nextLevel(){
         level -= 1;
+        resetScreen();
+    }
 
+    function resetScreen(){
+        resultTimer = 3;
         myTerrain = objects.Terrain(level, graphics.canvas);
 
         myLander = objects.Lander({
@@ -323,8 +288,14 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         });
     }
 
+    function fireThrusters(elapsedTime){
+        if(myLander.fuel > 0){
+            myLander.thrust(elapsedTime);
+            particleSystem.shipThrust(myLander.rotation);
+        }
+    }
     function initialize() {
-        myKeyboard.register(controls["up"], myLander.thrust);
+        myKeyboard.register(controls["up"], fireThrusters);
         myKeyboard.register(controls["left"], myLander.rotateLeft);
         myKeyboard.register(controls["right"], myLander.rotateRight);
         myKeyboard.register('Escape', function() {
@@ -349,4 +320,4 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         nextLevel: nextLevel
     };
 
-}(MyGame.game, MyGame.objects, MyGame.render, MyGame.graphics, MyGame.input));
+}(MyGame.game, MyGame.objects, MyGame.render, MyGame.graphics, MyGame.input, MyGame.systems));

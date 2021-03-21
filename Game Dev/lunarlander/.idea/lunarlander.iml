@@ -8,8 +8,5 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="assign2_scripts" />
-    <orderEntry type="module" module-name="GameLoop" />
-    <orderEntry type="module" module-name="assign2" />
   </component>
 </module>

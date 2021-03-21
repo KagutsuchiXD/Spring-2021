@@ -20,7 +20,6 @@ MyGame.objects.Lander = function(spec) {
         }
     }
 
-
     function rotateRight(elapsedTime) {
         if(!spec.landed){
             spec.rotation += spec.rotateRate * (elapsedTime / 1000);
@@ -64,7 +63,6 @@ MyGame.objects.Lander = function(spec) {
         get landed() {return spec.landed},
         get speed() {return (Math.sqrt(Math.abs(Math.pow(spec.velocity.vx, 2)) + Math.abs(Math.pow(spec.velocity.vy, 2))) / 15)},
         get fuel() {return spec.fuel}
-
     };
 
     return api;

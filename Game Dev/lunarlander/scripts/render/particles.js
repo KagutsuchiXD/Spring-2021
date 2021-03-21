@@ -3,7 +3,7 @@ MyGame.render.ParticleSystem = function(system, graphics, imageSrc) {
 
     let image = new Image();
     let isReady = false;  // Can't render until the texture is loaded
-    
+
     // Get the texture to use for the particle system loading and ready for rendering
     image.onload = function() {
         isReady = true;

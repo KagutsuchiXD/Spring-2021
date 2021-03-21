@@ -17,6 +17,17 @@ let Random = (function() {
             y: Math.sin(angle)
         };
     }
+
+    function nextArcVector(rotation) {
+        let direction = rotation + (2 * Math.PI);
+        let max = direction + 15;
+        let min = direction - 15;
+        let angle = Math.random() * (max - min) + min;
+        return {
+            x: Math.cos(angle),
+            y: Math.sin(angle)
+        };
+    }
     // This is used to give a small performance optimization in generating gaussian random numbers.
     let usePrevious = false;
     let y2;
@@ -51,6 +62,7 @@ let Random = (function() {
     return {
         nextDouble : nextDouble,
         nextRange : nextRange,
+        nextArcVector: nextArcVector,
         nextCircleVector : nextCircleVector,
         nextGaussian : nextGaussian
     };
