@@ -1,4 +1,4 @@
-MyGame.screens['pause'] = (function(game) {
+MyGame.screens['pause'] = (function(game,screens) {
     'use strict';
 
     function initialize() {
@@ -8,7 +8,11 @@ MyGame.screens['pause'] = (function(game) {
 
         document.getElementById('id-quit').addEventListener(
             'click',
-            function() { game.showScreen('main-menu'); });
+            function() {
+                if(screens['game-play'].score > 0){
+                    screens['game-play'].calculateScore();
+                }
+                game.showScreen('main-menu'); });
     }
 
     function run() {
@@ -18,4 +22,4 @@ MyGame.screens['pause'] = (function(game) {
         initialize : initialize,
         run : run
     };
-}(MyGame.game));
+}(MyGame.game,MyGame.screens));

@@ -14,7 +14,9 @@ MyGame.objects.Text = function(spec) {
         get font() { return spec.font; },
         get fillStyle() { return spec.fillStyle; },
         get strokeStyle() { return spec.strokeStyle; },
-        set strokeStyle(style) {spec.strokeStyle = style;}
+        set strokeStyle(style) {spec.strokeStyle = style;},
+        set text(string) {spec.text = string;},
+        set font(string) {spec.font = string;}
     };
 
     return api;

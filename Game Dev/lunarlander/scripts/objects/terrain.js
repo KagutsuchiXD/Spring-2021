@@ -24,9 +24,9 @@ MyGame.objects.Terrain = function(zones, canvas){
         if (zones === 1){
             platFormWidth = zoneWidth / 2;
         }
-        let x1 = Math.floor(Math.random() * (canvas.width - (2 * zoneWidth))) + zoneWidth;
+        let x1 = Math.floor(Math.random() * (canvas.width - (2 * platFormWidth))) + platFormWidth;
         let y1 = Math.floor(Math.random() * ((canvas.height - zoneHeight) - (canvas.height / 2))) + (canvas.height / 2);
-        let x2 = x1 + zoneWidth;
+        let x2 = x1 + platFormWidth;
         let y2 = y1;
         landing.xValues.push(x1);
         landing.xValues.push(x2);
@@ -98,8 +98,9 @@ MyGame.objects.Terrain = function(zones, canvas){
             landing: true
         }
         let zone = {
-          pt1: landingPointA,
-          pt2: landingPointB
+            pt1: landingPointA,
+            pt2: landingPointB,
+            width: landingPointB.x - landingPointA.x
         };
         landingZones.push(zone);
         generateRMDPoints(a, landingPointA);
@@ -120,7 +121,8 @@ MyGame.objects.Terrain = function(zones, canvas){
         }
         let zone1 = {
             pt1: landingPoint1A,
-            pt2: landingPoint1B
+            pt2: landingPoint1B,
+            width: landingPoint1B.x - landingPoint1A.x
         };
         landingZones.push(zone1);
         let landingPoint2A = {
@@ -135,7 +137,8 @@ MyGame.objects.Terrain = function(zones, canvas){
         }
         let zone2 = {
             pt1: landingPoint2A,
-            pt2: landingPoint2B
+            pt2: landingPoint2B,
+            width: landingPoint2B.x - landingPoint2A.x
         };
         landingZones.push(zone2);
         if (landingPoint1A.x < landingPoint2A.x){

@@ -10,7 +10,7 @@ MyGame.systems.ParticleSystem = function(spec) {
             center: { x: spec.center.x, y: spec.center.y },
             size: { width: size, height: size},  // Making square particles
             direction: Random.nextArcVector(angle),
-            speed: Random.nextGaussian(spec.speed.mean, spec.speed.stdev), // pixels per second
+            speed: Random.nextGaussian(spec.speed.mean, spec.speed.stdev) + 35, // pixels per second
             rotation: 0,
             lifetime: Random.nextGaussian(spec.lifetime.mean, spec.lifetime.stdev),    // How long the particle should live, in seconds
             alive: 0    // How long the particle has been alive, in seconds
@@ -25,9 +25,9 @@ MyGame.systems.ParticleSystem = function(spec) {
             center: { x: spec.center.x, y: spec.center.y },
             size: { width: size, height: size},
             direction: Random.nextCircleVector(),
-            speed: Random.nextGaussian(spec.speed.mean/4, spec.speed.stdev), // pixels per second
+            speed: Random.nextGaussian(spec.speed.mean, spec.speed.stdev) / 2, // pixels per second
             rotation: 0,
-            lifetime: Random.nextGaussian(spec.lifetime.mean + 2, spec.lifetime.stdev),    // How long the particle should live, in seconds
+            lifetime: Random.nextGaussian(spec.lifetime.mean , spec.lifetime.stdev),    // How long the particle should live, in seconds
             alive: 0    // How long the particle has been alive, in seconds
         };
 
@@ -63,7 +63,7 @@ MyGame.systems.ParticleSystem = function(spec) {
 
     function shipThrust(angle){
         // Generate some new particles
-        for (let particle = 0; particle < 1; particle++) {
+        for (let particle = 0; particle < 3; particle++) {
             // Assign a unique name to each particle
             spec.particles[nextName++] = createThrust(angle);
         }
@@ -71,7 +71,7 @@ MyGame.systems.ParticleSystem = function(spec) {
 
     function shipCrash(){
         // Generate some new particles
-        for (let particle = 0; particle < 5; particle++) {
+        for (let particle = 0; particle < 10; particle++) {
             // Assign a unique name to each particle
             spec.particles[nextName++] = createExplosion();
         }

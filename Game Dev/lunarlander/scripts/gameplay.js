@@ -6,7 +6,7 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
 
     let myKeyboard = input.Keyboard();
 
-    let resultTimer = 3;
+    let resultTimer = 5;
     let level = 2;
     let score = 0;
     let particleSystem = systems.ParticleSystem({
@@ -69,7 +69,7 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         font: '100pt Arial',
         fillStyle: 'rgba(255, 255, 255, 1)',
         strokeStyle: 'rgba(255, 0, 0, 1)',
-        position: { x: 400, y: graphics.canvas.height / 2 }
+        position: { x: graphics.canvas.width / 5, y: graphics.canvas.height / 3 }
     })
 
     function lineCircleIntersection(pt1, pt2, circle) {
@@ -192,9 +192,16 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
             cancelNextRequest = true;
             game.showScreen('transition');
         }
+        else if(myLander.alive && resultTimer > 0){
+            result.text = "LANDING COMPLETE";
+            result.font = '50pt Arial';
+            resultTimer -= (elapsedTime / 1000);
+        }
         else if(resultTimer > 0){
             resultTimer -= (elapsedTime / 1000);
-            particleSystem.shipCrash();
+            if(resultTimer > 2){
+                particleSystem.shipCrash();
+            }
         }
         else{
             calculateScore();
@@ -206,15 +213,22 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     function render() {
         graphics.clear();
 
-        renderer.Lander.render(myLander);
         renderer.Terrain.render(myTerrain);
         renderer.Text.render(speedometer);
         renderer.Text.render(fuelGage);
         renderer.Text.render(tiltAngle);
         if(!myLander.alive){
             renderer.Text.render(result);
+            renderer.Lander.render(myLander);
+            renderParticles.render();
         }
-        renderParticles.render();
+        else{
+            if(myLander.landed){
+                renderer.Text.render(result);
+            }
+            renderParticles.render();
+            renderer.Lander.render(myLander);
+        }
     }
 
     function gameLoop(time) {
@@ -243,6 +257,8 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
 
     function resetScreen(){
         resultTimer = 3;
+        result.text = "YOU DIED";
+        result.font = '100pt Arial';
         myTerrain = objects.Terrain(level, graphics.canvas);
 
         myLander = objects.Lander({
@@ -317,7 +333,9 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         initialize : initialize,
         run : run,
         newGame: newGame,
-        nextLevel: nextLevel
+        nextLevel: nextLevel,
+        calculateScore: calculateScore,
+        get score(){return score;}
     };
 
 }(MyGame.game, MyGame.objects, MyGame.render, MyGame.graphics, MyGame.input, MyGame.systems));

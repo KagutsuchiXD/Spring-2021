@@ -52,7 +52,7 @@ MyGame.graphics = (function() {
                 pad,
                 spec.landingZones[i].pt1.x,
                 spec.landingZones[i].pt1.y,
-                canvas.width * 0.15,
+                spec.landingZones[i].width,
                 canvas.height / 40)
         }
     }
