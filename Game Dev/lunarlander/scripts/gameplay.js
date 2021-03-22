@@ -105,6 +105,8 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
                 let survived = checkSurvival(myTerrain.points[i-1], myTerrain.points[i]);
                 if(survived){
                     console.log("You Survived");
+                    MyGame.sounds.complete.currentTime = 0;
+                    MyGame.sounds.complete.play();
                 }
                 else{
                     console.log("You Died");
@@ -207,7 +209,6 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         else{
             calculateScore();
             cancelNextRequest = true;
-            MyGame.sounds.explosion.pause();
             game.showScreen('main-menu');
         }
     }
@@ -339,7 +340,8 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         newGame: newGame,
         nextLevel: nextLevel,
         saveScore: saveScore,
-        get score(){return score;}
+        get score(){return score;},
+        get cancelNextRequest(){return cancelNextRequest;}
     };
 
 }(MyGame.game, MyGame.objects, MyGame.render, MyGame.graphics, MyGame.input, MyGame.systems));

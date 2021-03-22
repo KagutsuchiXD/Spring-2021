@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <chrono>
 #include <mpi.h>
 #include <unistd.h>
@@ -22,11 +23,18 @@ int calculateDistance(int pt1[], int pt2[]){
                 pow(y2 - y1, 2) * 1.0);
 }
 
-
+int calculatePathLength(int path[100][3]){
+    int distance = 0;
+    for (int i = 0; i < 100; i += 2){
+        distance += calculateDistance(path[i], path[i+1]);
+    }
+    return distance;
+}
 
 int main(int argc, char** argv){
     int rank, size;
-    int family[2][100][3];
+    bool terminate = false;
+    int result;
 
     int cities[100][3] = 
         {{1,   179140,   750703}, {2,   78270,   737081},
@@ -81,28 +89,183 @@ int main(int argc, char** argv){
         {99,  732680,   857362}, {100, 685760,   866857}};
 
 
-    MPI_Status mystatus;
+    MPI_Status myStatus;
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MCW, &rank);
     MPI_Comm_size(MCW, &size);
 
-    if (rank == 0){
-        int solutions[8][100][3];
-        for (int i = 0; i < size - 1; ++i){
-            int parent1[100][3];
-            copy(begin(cities), end(cities), begin(parent1));
-            random_shuffle(begin(parent1), end(parent1));
-            int parent2[100][3];
-            copy(begin(cities), end(cities), begin(parent2));
-            random_shuffle(begin(parent2), end(parent2));
+    srand(time(NULL) + rank);
 
+    if (rank == 0){
+        std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+        ofstream fout;
+        fout.open("results.txt");
+
+        double time;
+        int bestResult = 2147483647;
+        double bestTime;
+        while(1){
+            int terminateFlag;
+            MPI_Iprobe(MPI_ANY_SOURCE, 0, MCW, &terminateFlag, &myStatus);
+            if(terminateFlag){
+                MPI_Recv(&terminate, 1, MPI_C_BOOL, MPI_ANY_SOURCE, 0, MCW, &myStatus);
+            }
+            if(terminate){
+                fout.close();
+                cout << "The shortest distance was " << bestResult << " found in " << bestTime << " seconds." << endl; 
+                break;
+            }
+            
+            int resultFlag;
+            MPI_Iprobe(MPI_ANY_SOURCE, 1, MCW, &resultFlag, &myStatus);
+            while(resultFlag){
+                MPI_Recv(&result, 1, MPI_INT, MPI_ANY_SOURCE, 1, MCW, MPI_STATUS_IGNORE);
+                // cout << "printing to file" << endl;
+                std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+                std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+                time = time_span.count();
+                if(result < bestResult){
+                    bestResult = result;
+                    bestTime = time;
+                }
+                fout << result << " found in " << time << " seconds." << endl;
+                MPI_Iprobe(MPI_ANY_SOURCE, 1, MCW, &resultFlag, &myStatus);
+            }
         }
     }
     else{
+        int iterations = 1000;
+        int parents[2][100][3];
+        for (int i = 0; i < 2; ++i){
+            int parent[100][3];
+            for (int j = 0; j < 100; ++j){
+                for (int k = 0; k < 3; ++k){
+                    parent[j][k] = cities[j][k];
+                }
+            }
+            random_shuffle(begin(parent), end(parent));
+            for (int j = 0; j < 100; ++j){
+                for (int k = 0; k < 3; ++k){
+                    parents[i][j][k] = parent[j][k];
+                }
+            }
+        }
+        while(iterations > 0){
+            int childA[100][3];
+            int childB[100][3];
+            for (int i = 0; i < 100; ++i){
+                for(int j = 0; j < 3; ++j){
+                    childA[i][j] = parents[0][i][j];
+                    childB[i][j] = parents[1][i][j];
+                }
+            }
+            int index = rand() % 50;
+            for (int i = 0; i < index + 50; ++i){
+                int indexA = parents[0][i][0];
+                int indexB = parents[1][i][0];
+                swap(childA[indexA - 1], childA[indexB -1]);
+                swap(childB[indexA - 1], childB[indexB -1]);
+            }
+            
+            int parentADistance = calculatePathLength(parents[0]);
+            int parentBDistance = calculatePathLength(parents[1]);
+            int childADistance = calculatePathLength(childA);
+            int childBDistance = calculatePathLength(childB);
 
+            if (childADistance <= childBDistance){
+                if(childADistance <= parentADistance || childADistance <= parentBDistance){
+                    if(parentADistance <= parentBDistance && childADistance <= parentBDistance){
+                        for (int i = 0; i < 100; ++i){
+                            for(int j = 0; j < 3; ++j){
+                                parents[1][i][j] = childA[i][j];
+                            }
+                        }
+                        if(childADistance < parentADistance){
+                            MPI_Send(&childADistance, 1, MPI_INT, 0, 1, MCW);
+                        }
+                        else{
+                            MPI_Send(&parentADistance, 1, MPI_INT, 0, 1, MCW);
+                        }
+                    }
+                    else if(parentBDistance <= parentADistance && childADistance <= parentADistance){
+                        for (int i = 0; i < 100; ++i){
+                            for(int j = 0; j < 3; ++j){
+                                parents[0][i][j] = childA[i][j];
+                            }
+                        }
+                        if(childADistance < parentBDistance){
+                            MPI_Send(&childADistance, 1, MPI_INT, 0, 1, MCW);
+                        }
+                        else{
+                            MPI_Send(&parentBDistance, 1, MPI_INT, 0, 1, MCW);
+                        }
+                    }
+                }
+                else{
+                    if(parentADistance < parentBDistance){
+                        MPI_Send(&parentADistance, 1, MPI_INT, 0, 1, MCW);
+                    }
+                    else{
+                        MPI_Send(&parentBDistance, 1, MPI_INT, 0, 1, MCW);
+                    }
+                }
+                iterations -= 1;
+                if(iterations <= 0){
+                    terminate = true;
+                    sleep(1);
+                    if(rank == 1){
+                        MPI_Send(&terminate, 1, MPI_C_BOOL, 0, 0, MCW);
+                    }
+                }
+            }
+            else{
+                if(childBDistance <= parentADistance || childBDistance <= parentBDistance){
+                    if(parentADistance <= parentBDistance && childBDistance <= parentBDistance){
+                        for (int i = 0; i < 100; ++i){
+                            for(int j = 0; j < 3; ++j){
+                                parents[1][i][j] = childB[i][j];
+                            }
+                        }
+                        if(childBDistance < parentADistance){
+                            MPI_Send(&childBDistance, 1, MPI_INT, 0, 1, MCW);
+                        }
+                        else{
+                            MPI_Send(&parentADistance, 1, MPI_INT, 0, 1, MCW);
+                        }
+                    }
+                    else if(parentBDistance <= parentADistance && childBDistance <= parentADistance){
+                        for (int i = 0; i < 100; ++i){
+                            for(int j = 0; j < 3; ++j){
+                                parents[0][i][j] = childB[i][j];
+                            }
+                        }
+                        if(childBDistance < parentBDistance){
+                            MPI_Send(&childBDistance, 1, MPI_INT, 0, 1, MCW);
+                        }
+                        else{
+                            MPI_Send(&parentBDistance, 1, MPI_INT, 0, 1, MCW);
+                        }
+                    }
+                }
+                else{
+                    if(parentADistance < parentBDistance){
+                        MPI_Send(&parentADistance, 1, MPI_INT, 0, 1, MCW);
+                    }
+                    else{
+                        MPI_Send(&parentBDistance, 1, MPI_INT, 0, 1, MCW);
+                    }
+                }
+                iterations -= 1;
+                if(iterations <= 0){
+                    terminate = true;
+                    sleep(1);
+                    if(rank == 1){
+                        MPI_Send(&terminate, 1, MPI_C_BOOL, 0, 0, MCW);
+                    }
+                }
+            }
+        }
     }
-
-    cout << calculateDistance(cities[0], cities[1]) << endl;
 
     MPI_Finalize();
     return 0;

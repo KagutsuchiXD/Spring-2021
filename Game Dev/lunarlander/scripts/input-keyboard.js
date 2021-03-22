@@ -6,7 +6,7 @@ MyGame.input.Keyboard = function () {
 
     function keyPress(e) {
         that.keys[e.key] = e.timeStamp;
-        if(e.key === controls["up"]){
+        if(e.key === controls["up"] && !MyGame.screens['game-play'].cancelNextRequest){
             MyGame.sounds.thruster.play();
         }
     }
