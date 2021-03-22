@@ -16,7 +16,7 @@ h1, p {
     width: 50%;
     height: 50vw;
     border-style: solid;
-    border-width: 1px;
+    border-width: 3px;
     background-color: rgb(100,100,100);
     background-image: url("../assets/space.jpeg");
     font-size: 40px;
@@ -33,9 +33,7 @@ h1, p {
 }
 
 #main-menu {
-    padding-top: 1em;
     cursor: pointer;
-    font-size: 0.75em;
 }
 
 ul.menu {
@@ -46,7 +44,7 @@ ul.menu {
 }
 
 ul.menu li {
-    margin: 0.8em 0;
+    margin: 1vw;
 }
 
 ul.menu li button {
@@ -71,7 +69,36 @@ ul.menu li button:active {
 }
 
 #game div h1 {
+    text-align: center;
+}
+
+#main-menu div h1 {
+    font-size: 12vw;
+    text-align: center;
+}
+
+#controls div h1 {
     font-size: 6.5vw;
+    text-align: center;
+}
+
+#about div h1 {
+    font-size: 6.5vw;
+    text-align: center;
+}
+
+#high-scores div h1 {
+    font-size: 6.5vw;
+    text-align: center;
+}
+
+#pause div h1 {
+    font-size: 6.5vw;
+    text-align: center;
+}
+
+#transition div h1{
+    font-size: 3vw;
     text-align: center;
 }
 

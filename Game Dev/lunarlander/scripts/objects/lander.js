@@ -13,7 +13,7 @@ MyGame.objects.Lander = function(spec) {
 
     function updatePosition(elapsedTime){
         if(!spec.landed){
-            spec.velocity.vy += (20 * elapsedTime/ 1000);
+            spec.velocity.vy += (15 * elapsedTime/ 1000);
 
             spec.center.x += (spec.velocity.vx * (elapsedTime/ 1000));
             spec.center.y += (spec.velocity.vy * (elapsedTime/ 1000));

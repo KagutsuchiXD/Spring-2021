@@ -86,7 +86,7 @@ MyGame.screens['controls'] = (function(game) {
     }
 
     function run() {
-
+        MyGame.sounds.menu.play();
     }
 
     return {

@@ -7,27 +7,29 @@ MyGame.screens['transition'] = (function(game, screens) {
             'click',
             function() {
                 stop = true;
-                if(screens['game-play'].score > 0){
-                    screens['game-play'].calculateScore();
-                }
                 game.showScreen('main-menu'); });
     }
 
     function run() {
+        MyGame.sounds.game.pause();
+        MyGame.sounds.menu.play();
         stop = false;
-        initialize();
         let timeLeft = 3;
         let timer = setInterval(function(){
-            if(timeLeft === 0){
-                if(!stop){
+            if (!stop){
+                if(timeLeft === 0){
                     clearInterval(timer);
                     screens['game-play'].nextLevel();
                     game.showScreen('game-play');
                 }
-            } else {
-                document.getElementById("timer").innerHTML = "<p>Next level begins in " + timeLeft + "</p>";
+                else {
+                    document.getElementById("timer").innerHTML = "<p>Next level begins in " + timeLeft + "</p>";
+                }
+                timeLeft -= 1;
             }
-            timeLeft -= 1;
+            else{
+                clearInterval(timer);
+            }
         }, 1000);
     }
 

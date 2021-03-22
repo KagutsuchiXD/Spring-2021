@@ -27,6 +27,7 @@ MyGame.screens['high-scores'] = (function(game) {
     }
 
     function run() {
+        MyGame.sounds.menu.play();
         scoreList.innerHTML = "";
         initialize();
     }

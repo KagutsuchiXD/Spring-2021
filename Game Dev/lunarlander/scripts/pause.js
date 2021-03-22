@@ -9,13 +9,12 @@ MyGame.screens['pause'] = (function(game,screens) {
         document.getElementById('id-quit').addEventListener(
             'click',
             function() {
-                if(screens['game-play'].score > 0){
-                    screens['game-play'].calculateScore();
-                }
                 game.showScreen('main-menu'); });
     }
 
     function run() {
+        MyGame.sounds.game.pause();
+        MyGame.sounds.menu.play();
     }
 
     return {

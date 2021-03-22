@@ -21,15 +21,15 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     let myTerrain = objects.Terrain(level, graphics.canvas);
 
     let myLander = objects.Lander({
-        thrust : 0.09,
+        thrust : 0.07,
         rotateRate : 3.14159 / 2,  // Radians per second
         center: { x: graphics.canvas.width / 2, y: 100 },
-        radius: graphics.canvas.width / 40,
+        radius: graphics.canvas.width / 50,
         rotation : -1.5708,
         velocity: {vx: 0, vy: 0},
         fuel: 20.0,
         imageSrc: 'assets/lander.png',
-        size: { width: graphics.canvas.width / 20, height: graphics.canvas.height / 20 }
+        size: { width: graphics.canvas.width / 25, height: graphics.canvas.height / 25 }
     }, particleSystem);
 
     let speedometer = objects.Text({
@@ -109,6 +109,8 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
                 else{
                     console.log("You Died");
                     particleSystem.shipCrash();
+                    MyGame.sounds.explosion.currentTime = 0;
+                    MyGame.sounds.explosion.play();
                 }
                 myLander.updateState(detected, survived);
                 break;
@@ -122,12 +124,12 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
     }
 
     function calculateScore(){
-        if (myLander.alive){
+        if (myLander.alive && myLander.landed){
             score += (myLander.fuel * 1000) / level;
         }
-        else{
-            score += 0;
-        }
+    }
+
+    function saveScore(){
         if (score > 0){
             let swap = false;
             for(let i = 5; i > 0; i--){
@@ -177,7 +179,6 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         else{
             tiltAngle.strokeStyle = 'rgba(40, 224, 89, 1)';
         }
-
         landingDetection();
     }
 
@@ -206,6 +207,7 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         else{
             calculateScore();
             cancelNextRequest = true;
+            MyGame.sounds.explosion.pause();
             game.showScreen('main-menu');
         }
     }
@@ -262,15 +264,15 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         myTerrain = objects.Terrain(level, graphics.canvas);
 
         myLander = objects.Lander({
-            thrust : 0.09,
+            thrust : 0.07,
             rotateRate : 3.14159 / 2,  // Radians per second
-            center: { x: graphics.canvas.width / 2, y: 100 },
-            radius: graphics.canvas.width / 40,
-            rotation : -1.5708,
+            center: { x: graphics.canvas.width - 100, y: 100 },
+            radius: graphics.canvas.width / 50,
+            rotation : -2.35619,
             velocity: {vx: 0, vy: 0},
             fuel: 20.0,
             imageSrc: 'assets/lander.png',
-            size: { width: graphics.canvas.width / 20, height: graphics.canvas.height / 20 }
+            size: { width: graphics.canvas.width / 25, height: graphics.canvas.height / 25 }
         });
 
         speedometer = objects.Text({
@@ -310,6 +312,7 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
             particleSystem.shipThrust(myLander.rotation);
         }
     }
+
     function initialize() {
         myKeyboard.register(controls["up"], fireThrusters);
         myKeyboard.register(controls["left"], myLander.rotateLeft);
@@ -317,13 +320,14 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         myKeyboard.register('Escape', function() {
             // Stop the game loop by canceling the request for the next animation frame
             cancelNextRequest = true;
-            // Then, return to the main menu
             game.showScreen('pause');
         });
     }
 
     function run() {
         initialize();
+        MyGame.sounds.menu.pause();
+        MyGame.sounds.game.play();
         lastTimeStamp = performance.now();
         cancelNextRequest = false;
         requestAnimationFrame(gameLoop);
@@ -334,7 +338,7 @@ MyGame.screens['game-play'] = (function(game, objects, renderer, graphics, input
         run : run,
         newGame: newGame,
         nextLevel: nextLevel,
-        calculateScore: calculateScore,
+        saveScore: saveScore,
         get score(){return score;}
     };
 

@@ -8,6 +8,7 @@ MyGame.screens['about'] = (function(game) {
     }
 
     function run() {
+        MyGame.sounds.menu.play();
     }
 
     return {

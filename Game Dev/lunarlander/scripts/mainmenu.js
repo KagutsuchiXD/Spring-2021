@@ -2,6 +2,7 @@ MyGame.screens['main-menu'] = (function(game, screens) {
     'use strict';
 
     function initialize() {
+        MyGame.sounds.menu.play();
         document.getElementById('id-new-game').addEventListener(
             'click',
             function() {
@@ -22,6 +23,10 @@ MyGame.screens['main-menu'] = (function(game, screens) {
     }
 
     function run() {
+        MyGame.sounds.game.pause();
+        MyGame.sounds.explosion.pause();
+        MyGame.sounds.menu.play();
+        screens['game-play'].saveScore();
     }
 
     return {

@@ -20,8 +20,8 @@ let Random = (function() {
 
     function nextArcVector(rotation) {
         let direction = rotation + Math.PI;
-        let max = direction + 0.523599;
-        let min = direction - 0.523599;
+        let max = direction + 0.4;
+        let min = direction - 0.4;
         let angle = Math.random() * (max - min) + min;
         return {
             x: Math.cos(angle),

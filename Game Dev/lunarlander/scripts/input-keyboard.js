@@ -6,10 +6,16 @@ MyGame.input.Keyboard = function () {
 
     function keyPress(e) {
         that.keys[e.key] = e.timeStamp;
+        if(e.key === controls["up"]){
+            MyGame.sounds.thruster.play();
+        }
     }
 
     function keyRelease(e) {
         delete that.keys[e.key];
+        if(e.key === controls["up"]){
+            MyGame.sounds.thruster.pause();
+        }
     }
 
     that.update = function (elapsedTime, spec) {

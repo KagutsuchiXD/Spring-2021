@@ -1,5 +1,9 @@
 MyGame.game = (function(screens){
     'use strict';
+    MyGame.sounds.thruster = new Audio("assets/sounds/thrusters.mp3");
+    MyGame.sounds.explosion = new Audio("assets/sounds/explosion.mp3");
+    MyGame.sounds.game = new Audio("assets/sounds/gameplay.mp3");
+    MyGame.sounds.menu = new Audio("assets/sounds/spacemenu.mp3");
 
     function showScreen(id) {
         let active = document.getElementsByClassName('active');
