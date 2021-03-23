@@ -100,7 +100,7 @@ int main(int argc, char** argv){
         std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
         ofstream fout;
         fout.open("results.txt");
-
+        int original = calculatePathLength(cities);
         double time;
         int bestResult = 2147483647;
         double bestTime;
@@ -112,7 +112,8 @@ int main(int argc, char** argv){
             }
             if(terminate){
                 fout.close();
-                cout << "The shortest distance was " << bestResult << " found in " << bestTime << " seconds." << endl; 
+                cout << "The original path length was " << original << endl;
+                cout << "The shortest distance found was " << bestResult << " found in " << bestTime << " seconds." << endl; 
                 break;
             }
             
@@ -120,7 +121,6 @@ int main(int argc, char** argv){
             MPI_Iprobe(MPI_ANY_SOURCE, 1, MCW, &resultFlag, &myStatus);
             while(resultFlag){
                 MPI_Recv(&result, 1, MPI_INT, MPI_ANY_SOURCE, 1, MCW, MPI_STATUS_IGNORE);
-                // cout << "printing to file" << endl;
                 std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
                 std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
                 time = time_span.count();
@@ -136,18 +136,17 @@ int main(int argc, char** argv){
     else{
         int iterations = 1000;
         int parents[2][100][3];
-        for (int i = 0; i < 2; ++i){
-            int parent[100][3];
-            for (int j = 0; j < 100; ++j){
-                for (int k = 0; k < 3; ++k){
-                    parent[j][k] = cities[j][k];
-                }
+        int parent[100][3];
+        for (int j = 0; j < 100; ++j){
+            for (int k = 0; k < 3; ++k){
+                parent[j][k] = cities[j][k];
+                parents[0][j][k] = cities[j][k];
             }
-            random_shuffle(begin(parent), end(parent));
-            for (int j = 0; j < 100; ++j){
-                for (int k = 0; k < 3; ++k){
-                    parents[i][j][k] = parent[j][k];
-                }
+        }
+        random_shuffle(begin(parent), end(parent));
+        for (int j = 0; j < 100; ++j){
+            for (int k = 0; k < 3; ++k){
+                parents[1][j][k] = parent[j][k];
             }
         }
         while(iterations > 0){
@@ -209,14 +208,6 @@ int main(int argc, char** argv){
                         MPI_Send(&parentBDistance, 1, MPI_INT, 0, 1, MCW);
                     }
                 }
-                iterations -= 1;
-                if(iterations <= 0){
-                    terminate = true;
-                    sleep(1);
-                    if(rank == 1){
-                        MPI_Send(&terminate, 1, MPI_C_BOOL, 0, 0, MCW);
-                    }
-                }
             }
             else{
                 if(childBDistance <= parentADistance || childBDistance <= parentBDistance){
@@ -255,15 +246,15 @@ int main(int argc, char** argv){
                         MPI_Send(&parentBDistance, 1, MPI_INT, 0, 1, MCW);
                     }
                 }
-                iterations -= 1;
+            }
+            iterations -= 1;
                 if(iterations <= 0){
                     terminate = true;
-                    sleep(1);
+                    sleep(3);
                     if(rank == 1){
                         MPI_Send(&terminate, 1, MPI_C_BOOL, 0, 0, MCW);
                     }
                 }
-            }
         }
     }
 
