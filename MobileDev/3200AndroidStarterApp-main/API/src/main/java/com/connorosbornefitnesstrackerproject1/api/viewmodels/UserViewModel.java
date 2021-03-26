@@ -46,11 +46,6 @@ public class UserViewModel extends ViewModel {
         return user;
     }
 
-//    public DatabaseReference checkGoals(){
-//        return database.child("userData").child(auth.getCurrentUser().getUid()).child("goalList").;
-//    }
-
-
     public void signUp(String email, String password) {
         auth.createUserWithEmailAndPassword(email, password);
 //        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -81,8 +76,7 @@ public class UserViewModel extends ViewModel {
             database.child("userData").child(user.getValue().uid).child("goalList").child("ExerciseGoal").setValue(newGoal);
         }
     }
+
     public void updateGoalData(){}
-
-
 }
 

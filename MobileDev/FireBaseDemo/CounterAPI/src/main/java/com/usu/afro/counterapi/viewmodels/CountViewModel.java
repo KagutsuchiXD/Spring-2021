@@ -27,7 +27,6 @@ public class CountViewModel extends ViewModel {
             count.setValue((long)0);
             initCount();
         }
-
         return count;
     }
 

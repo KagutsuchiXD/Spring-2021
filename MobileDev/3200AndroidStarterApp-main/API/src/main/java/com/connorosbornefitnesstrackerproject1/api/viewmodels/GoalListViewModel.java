@@ -45,11 +45,15 @@ public class GoalListViewModel extends UserViewModel {
         return stepCount;
     }
 
+    public void incrementSteps(){
+        database.child("userData").child(auth.getCurrentUser().getUid()).child("goalList").child("StepGoal").child("progress").setValue(stepCount.getValue() + 1);
+    }
+
     private void initStepCount(){
         database.child("userData").child(auth.getCurrentUser().getUid()).child("goalList").child("StepGoal").child("progress").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                stepCount.setValue((Long)snapshot.getValue());
+                stepCount.setValue((long)snapshot.getValue());
             }
 
             @Override

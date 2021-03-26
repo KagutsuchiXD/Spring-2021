@@ -45,7 +45,7 @@ public class SignInSignUpWatch extends AppCompatActivity {
             System.out.println("MY USER");
             System.out.println(user);
             if (user != null){
-                Intent intent = new Intent(this, HomeActivity.class);
+                Intent intent = new Intent(this, WatchHomeActivity.class);
                 startActivity(intent);
                 finish();
             }
