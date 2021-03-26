@@ -159,7 +159,7 @@ int main(int argc, char** argv){
                 }
             }
             int index = rand() % 50;
-            for (int i = 0; i < index + 50; ++i){
+            for (int i = index; i < index + 50; ++i){
                 int indexA = parents[0][i][0];
                 int indexB = parents[1][i][0];
                 swap(childA[indexA - 1], childA[indexB -1]);

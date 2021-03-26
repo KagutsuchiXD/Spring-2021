@@ -1,19 +1,32 @@
 package com.connorosbornefitnesstrackerproject1.api.viewmodels;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.ObservableArrayList;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.connorosbornefitnesstrackerproject1.api.models.Goal;
 import com.connorosbornefitnesstrackerproject1.api.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class UserViewModel extends ViewModel {
-    FirebaseAuth auth;
+    public DatabaseReference database;
+    public FirebaseAuth auth;
     MutableLiveData<User> user = new MutableLiveData<>();
     MutableLiveData<RuntimeException> loginError = new MutableLiveData<>();
+
     public UserViewModel() {
+        database = FirebaseDatabase.getInstance().getReference();
         this.auth = FirebaseAuth.getInstance();
         this.auth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
@@ -32,6 +45,11 @@ public class UserViewModel extends ViewModel {
     public MutableLiveData<User> getUser() {
         return user;
     }
+
+//    public DatabaseReference checkGoals(){
+//        return database.child("userData").child(auth.getCurrentUser().getUid()).child("goalList").;
+//    }
+
 
     public void signUp(String email, String password) {
         auth.createUserWithEmailAndPassword(email, password);
@@ -53,5 +71,18 @@ public class UserViewModel extends ViewModel {
     public void signOut() {
         auth.signOut();
     }
+
+    public void storeUserGoalData(Goal newGoal){
+        if(user.getValue() == null) return;
+        if(newGoal.task.equals("Steps")){
+            database.child("userData").child(user.getValue().uid).child("goalList").child("StepGoal").setValue(newGoal);
+        }
+        else{
+            database.child("userData").child(user.getValue().uid).child("goalList").child("ExerciseGoal").setValue(newGoal);
+        }
+    }
+    public void updateGoalData(){}
+
+
 }
 
