@@ -8,8 +8,8 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class Goal {
     public String task;
-    public int amount;
-    public int progress;
+    public long amount;
+    public long progress;
 
     @Exclude
     public String id;

@@ -49,6 +49,14 @@ public class GoalListViewModel extends UserViewModel {
         database.child("userData").child(auth.getCurrentUser().getUid()).child("goalList").child("StepGoal").child("progress").setValue(stepCount.getValue() + 1);
     }
 
+    private void setStepCount(Long prog){
+        if(stepCount == null){
+            stepCount = new MutableLiveData<Long>();
+            stepCount.setValue(prog);
+            initStepCount();
+        }
+    }
+
     private void initStepCount(){
         database.child("userData").child(auth.getCurrentUser().getUid()).child("goalList").child("StepGoal").child("progress").addValueEventListener(new ValueEventListener() {
             @Override
@@ -72,6 +80,14 @@ public class GoalListViewModel extends UserViewModel {
         return heartrateTime;
     }
 
+    private void setHeartrateTime(Long prog){
+        if(heartrateTime == null){
+            heartrateTime = new MutableLiveData<Long>();
+            heartrateTime.setValue(prog);
+            initHeartrateTime();
+        }
+    }
+
     private void initHeartrateTime(){
         database.child("userData").child(auth.getCurrentUser().getUid()).child("goalList").child("ExerciseGoal").child("progress").addValueEventListener(new ValueEventListener() {
             @Override
@@ -93,6 +109,13 @@ public class GoalListViewModel extends UserViewModel {
                 Goal task = snapshot.getValue(Goal.class);
                 task.id = snapshot.getKey();
                 goalList.add(task);
+
+                if(task.task.equals("Steps")){
+                    setStepCount(task.progress);
+                }
+                else if(task.task.equals("Exercise")){
+                    setHeartrateTime(task.progress);
+                }
                 System.out.println("Gol List size: " + getGoalList().size());
                 Log.d("ADDED", "A contact was added");
             }
