@@ -2,6 +2,7 @@ package com.connorosbornefitnesstrackerproject1.watchapp;
 
 import androidx.databinding.ObservableList;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -18,11 +19,13 @@ import com.connorosbornefitnesstrackerproject1.api.models.Goal;
 
 public class WatchHomeActivity extends ActivityWithUserWatch {
     long lastStepTimeStamp = System.currentTimeMillis();
+    public static final int SENSOR_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watch_home);
+        requestPermissions(new String[]{Manifest.permission.BODY_SENSORS}, SENSOR_CODE);
         viewModel.getUser().observe(this, (user) -> {
             if (user != null){
                 SensorManager accelManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -47,8 +50,6 @@ public class WatchHomeActivity extends ActivityWithUserWatch {
                                 if (normg > 1.5){
                                     long now = System.currentTimeMillis();
                                     if (lastStepTimeStamp + 500 < now){
-                                        long stepCount = goalView.getStepCount().getValue() + (long)1;
-//                                        database.child("userData").child(auth.getCurrentUser().getUid()).child("goalList").child("StepGoal").child("progress").setValue(stepCount);
                                         goalView.incrementSteps();
                                         lastStepTimeStamp = now;
                                     }
@@ -67,6 +68,7 @@ public class WatchHomeActivity extends ActivityWithUserWatch {
                         new SensorEventListener() {
                             @Override
                             public void onSensorChanged(SensorEvent event) {
+                                System.out.println("Heart Rate Detected");
                                 float rate = event.values[0];
 
                                 if (rate > 150){
@@ -89,48 +91,6 @@ public class WatchHomeActivity extends ActivityWithUserWatch {
             }
         });
 
-        LinearLayout goals = findViewById(R.id.goal_list);
-        goalView.getGoalList().addOnListChangedCallback(new ObservableList.OnListChangedCallback() {
-            @Override
-            public void onChanged(ObservableList sender) {
-            }
-
-            @Override
-            public void onItemRangeChanged(ObservableList sender, int positionStart, int itemCount) {
-                Goal goal = goalView.getGoalList().get(positionStart);
-                View thisGoalItem = goals.getChildAt(positionStart);
-                TextView goalInfo = thisGoalItem.findViewById(R.id.goal);
-                String info = "Goal for " + goal.task + ": " + goal.amount;
-                goalInfo.setText(info);
-                goalInfo.setText(info);
-                TextView progressInfo = thisGoalItem.findViewById(R.id.progress);
-                progressInfo.setText("Progress: " + goal.progress);
-            }
-
-            @Override
-            public void onItemRangeInserted(ObservableList sender, int positionStart, int itemCount) {
-                Goal goal = goalView.getGoalList().get(positionStart);
-                View goalListItem = LayoutInflater.from(WatchHomeActivity.this).inflate(R.layout.goal_list_item, null);
-                TextView goalInfo = goalListItem.findViewById(R.id.goal);
-                String info = "Goal for " + goal.task + ": " + goal.amount;
-                goalInfo.setText(info);
-                TextView progressInfo = goalListItem.findViewById(R.id.progress);
-                progressInfo.setText("Progress: " + goal.progress);
-
-                goals.addView(goalListItem);
-            }
-
-            @Override
-            public void onItemRangeMoved(ObservableList sender, int fromPosition, int toPosition, int itemCount) {
-
-            }
-
-            @Override
-            public void onItemRangeRemoved(ObservableList sender, int positionStart, int itemCount) {
-
-            }
-        });
-
         findViewById(R.id.logout).setOnClickListener((view) -> {
             viewModel.signOut();
         });
@@ -144,6 +104,49 @@ public class WatchHomeActivity extends ActivityWithUserWatch {
                 Intent intent = new Intent(this, SignInSignUpWatch.class);
                 startActivity(intent);
                 finish();
+            }
+            else{
+                LinearLayout goals = findViewById(R.id.goal_list);
+                goalView.getGoalList().addOnListChangedCallback(new ObservableList.OnListChangedCallback() {
+                    @Override
+                    public void onChanged(ObservableList sender) {
+                    }
+
+                    @Override
+                    public void onItemRangeChanged(ObservableList sender, int positionStart, int itemCount) {
+                        Goal goal = goalView.getGoalList().get(positionStart);
+                        View thisGoalItem = goals.getChildAt(positionStart);
+                        TextView goalInfo = thisGoalItem.findViewById(R.id.goal);
+                        String info = "Goal for " + goal.task + ": " + goal.amount;
+                        goalInfo.setText(info);
+                        goalInfo.setText(info);
+                        TextView progressInfo = thisGoalItem.findViewById(R.id.progress);
+                        progressInfo.setText("Progress: " + goal.progress);
+                    }
+
+                    @Override
+                    public void onItemRangeInserted(ObservableList sender, int positionStart, int itemCount) {
+                        Goal goal = goalView.getGoalList().get(positionStart);
+                        View goalListItem = LayoutInflater.from(WatchHomeActivity.this).inflate(R.layout.goal_list_item, null);
+                        TextView goalInfo = goalListItem.findViewById(R.id.goal);
+                        String info = "Goal for " + goal.task + ": " + goal.amount;
+                        goalInfo.setText(info);
+                        TextView progressInfo = goalListItem.findViewById(R.id.progress);
+                        progressInfo.setText("Progress: " + goal.progress);
+
+                        goals.addView(goalListItem);
+                    }
+
+                    @Override
+                    public void onItemRangeMoved(ObservableList sender, int fromPosition, int toPosition, int itemCount) {
+
+                    }
+
+                    @Override
+                    public void onItemRangeRemoved(ObservableList sender, int positionStart, int itemCount) {
+
+                    }
+                });
             }
         });
     }
